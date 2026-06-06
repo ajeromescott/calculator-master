@@ -2,167 +2,414 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scientific Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>ProCalc - Scientific Calculator</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Professional Scientific Calculator with Graphing, Themes, and More">
+    <meta name="theme-color" content="#302b63">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ProCalc">
+    <link rel="manifest" href="#" id="manifestLink">
+    
+    <!-- Graph Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- AdSense Placeholder -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ============================================================
+           CSS VARIABLES & THEMES
+        ============================================================ */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --calc-bg: rgba(255,255,255,0.05);
+            --display-bg: rgba(0,0,0,0.3);
+            --btn-number-bg: rgba(255,255,255,0.08);
+            --btn-number-color: #ffffff;
+            --btn-operator-bg: rgba(100,160,255,0.15);
+            --btn-operator-color: #7eb8ff;
+            --btn-function-bg: rgba(255,255,255,0.05);
+            --btn-function-color: rgba(200,200,255,0.9);
+            --btn-equals-bg: linear-gradient(135deg, #4facfe, #00f2fe);
+            --btn-clear-bg: rgba(255,80,80,0.15);
+            --btn-clear-color: #ff7070;
+            --btn-special-bg: rgba(255,200,100,0.1);
+            --btn-special-color: rgba(255,200,150,0.9);
+            --btn-memory-bg: rgba(100,255,200,0.1);
+            --btn-memory-color: rgba(100,255,200,0.9);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255,255,255,0.5);
+            --border-color: rgba(255,255,255,0.1);
+            --accent: #4facfe;
+            --shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
+
+        /* LIGHT THEME */
+        [data-theme="light"] {
+            --bg-gradient: linear-gradient(135deg, #e8ecf4, #d5dde8, #c8d4e0);
+            --calc-bg: rgba(255,255,255,0.9);
+            --display-bg: rgba(240,244,255,0.95);
+            --btn-number-bg: rgba(255,255,255,0.9);
+            --btn-number-color: #2c3e50;
+            --btn-operator-bg: rgba(52,152,219,0.15);
+            --btn-operator-color: #2980b9;
+            --btn-function-bg: rgba(200,210,230,0.6);
+            --btn-function-color: #34495e;
+            --btn-equals-bg: linear-gradient(135deg, #3498db, #2980b9);
+            --btn-clear-bg: rgba(231,76,60,0.15);
+            --btn-clear-color: #e74c3c;
+            --btn-special-bg: rgba(241,196,15,0.15);
+            --btn-special-color: #d4a017;
+            --btn-memory-bg: rgba(46,204,113,0.15);
+            --btn-memory-color: #27ae60;
+            --text-primary: #2c3e50;
+            --text-secondary: rgba(44,62,80,0.6);
+            --border-color: rgba(0,0,0,0.08);
+            --accent: #3498db;
+            --shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        /* NEON THEME */
+        [data-theme="neon"] {
+            --bg-gradient: linear-gradient(135deg, #000000, #0a0a0a, #050505);
+            --calc-bg: rgba(0,255,100,0.03);
+            --display-bg: rgba(0,0,0,0.8);
+            --btn-number-bg: rgba(0,255,100,0.05);
+            --btn-number-color: #00ff64;
+            --btn-operator-bg: rgba(0,200,255,0.1);
+            --btn-operator-color: #00c8ff;
+            --btn-function-bg: rgba(255,0,200,0.05);
+            --btn-function-color: #ff00c8;
+            --btn-equals-bg: linear-gradient(135deg, #00ff64, #00c8ff);
+            --btn-clear-bg: rgba(255,50,50,0.1);
+            --btn-clear-color: #ff3232;
+            --btn-special-bg: rgba(255,200,0,0.05);
+            --btn-special-color: #ffc800;
+            --btn-memory-bg: rgba(200,0,255,0.1);
+            --btn-memory-color: #c800ff;
+            --text-primary: #00ff64;
+            --text-secondary: rgba(0,255,100,0.5);
+            --border-color: rgba(0,255,100,0.15);
+            --accent: #00ff64;
+            --shadow: 0 0 50px rgba(0,255,100,0.2);
+        }
+
+        /* SUNSET THEME */
+        [data-theme="sunset"] {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            --calc-bg: rgba(255,100,50,0.05);
+            --display-bg: rgba(0,0,0,0.4);
+            --btn-number-bg: rgba(255,150,100,0.1);
+            --btn-number-color: #ffb899;
+            --btn-operator-bg: rgba(255,100,50,0.15);
+            --btn-operator-color: #ff9966;
+            --btn-function-bg: rgba(255,50,100,0.08);
+            --btn-function-color: rgba(255,180,150,0.9);
+            --btn-equals-bg: linear-gradient(135deg, #f953c6, #b91d73);
+            --btn-clear-bg: rgba(255,50,50,0.15);
+            --btn-clear-color: #ff6b6b;
+            --btn-special-bg: rgba(255,200,50,0.1);
+            --btn-special-color: rgba(255,220,150,0.9);
+            --btn-memory-bg: rgba(100,200,255,0.1);
+            --btn-memory-color: rgba(150,220,255,0.9);
+            --text-primary: #ffe0d0;
+            --text-secondary: rgba(255,200,150,0.6);
+            --border-color: rgba(255,100,50,0.15);
+            --accent: #f953c6;
+            --shadow: 0 25px 50px rgba(0,0,0,0.6);
+        }
+
+        /* OCEAN THEME */
+        [data-theme="ocean"] {
+            --bg-gradient: linear-gradient(135deg, #000428, #004e92, #000428);
+            --calc-bg: rgba(0,150,255,0.05);
+            --display-bg: rgba(0,30,80,0.6);
+            --btn-number-bg: rgba(0,150,255,0.1);
+            --btn-number-color: #a0d8ff;
+            --btn-operator-bg: rgba(0,200,200,0.15);
+            --btn-operator-color: #00e5e5;
+            --btn-function-bg: rgba(0,100,200,0.1);
+            --btn-function-color: rgba(150,220,255,0.9);
+            --btn-equals-bg: linear-gradient(135deg, #00c6ff, #0072ff);
+            --btn-clear-bg: rgba(255,80,120,0.15);
+            --btn-clear-color: #ff6090;
+            --btn-special-bg: rgba(100,200,255,0.1);
+            --btn-special-color: rgba(150,230,255,0.9);
+            --btn-memory-bg: rgba(0,255,200,0.1);
+            --btn-memory-color: rgba(100,255,200,0.9);
+            --text-primary: #d0f0ff;
+            --text-secondary: rgba(150,220,255,0.6);
+            --border-color: rgba(0,150,255,0.2);
+            --accent: #00c6ff;
+            --shadow: 0 25px 50px rgba(0,0,0,0.7);
+        }
+
+        /* ============================================================
+           BASE STYLES
+        ============================================================ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             min-height: 100vh;
+            background: var(--bg-gradient);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+            transition: all 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        /* ============================================================
+           APP LAYOUT
+        ============================================================ */
+        .app-container {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            min-height: 100vh;
+        }
+
+        /* TOP NAV */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .app-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-logo .logo-icon {
+            font-size: 24px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* AD BANNER */
+        .ad-banner {
+            width: 100%;
+            max-width: 728px;
+            background: rgba(255,255,255,0.05);
+            border: 1px dashed rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            min-height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
         }
 
+        .ad-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ad-label {
+            font-size: 10px;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* CALCULATOR AREA */
+        .calc-area {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        /* CALCULATOR */
         .calculator-wrapper {
             width: 100%;
-            max-width: 420px;
+            max-width: 440px;
+            flex-shrink: 0;
         }
 
         .calculator {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--calc-bg);
             backdrop-filter: blur(20px);
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
             overflow: hidden;
+            transition: all 0.4s ease;
         }
 
-        /* Display Area */
+        /* DISPLAY */
         .display {
             padding: 24px 20px 16px;
-            background: rgba(0, 0, 0, 0.3);
+            background: var(--display-bg);
             min-height: 160px;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             position: relative;
+            transition: all 0.3s;
         }
 
         .display-history {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            color: var(--text-secondary);
             text-align: right;
-            min-height: 20px;
-            margin-bottom: 4px;
+            min-height: 18px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
         .display-expression {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.6);
+            font-size: 16px;
+            color: var(--text-secondary);
             text-align: right;
-            min-height: 28px;
-            margin-bottom: 8px;
+            min-height: 26px;
+            margin-bottom: 6px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            word-break: break-all;
         }
 
         .display-main {
             font-size: 48px;
-            color: #ffffff;
+            color: var(--text-primary);
             text-align: right;
             font-weight: 300;
             line-height: 1;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            transition: font-size 0.2s ease;
+            transition: font-size 0.2s ease, color 0.3s;
         }
 
-        .display-main.small {
-            font-size: 32px;
-        }
+        .display-main.small { font-size: 32px; }
+        .display-main.xsmall { font-size: 22px; }
 
-        .display-main.xsmall {
-            font-size: 24px;
-        }
-
-        .memory-indicator {
+        .display-badges {
             position: absolute;
             top: 12px;
             left: 16px;
             display: flex;
-            gap: 8px;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
-        .mem-badge {
-            background: rgba(100, 200, 255, 0.2);
-            color: rgba(100, 200, 255, 0.9);
-            font-size: 11px;
+        .badge {
+            font-size: 10px;
             padding: 2px 8px;
             border-radius: 4px;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-mem {
+            background: rgba(100,200,255,0.2);
+            color: rgba(100,200,255,0.9);
             display: none;
         }
 
-        .mem-badge.active {
-            display: block;
+        .badge-mem.active { display: block; }
+
+        .badge-angle {
+            background: rgba(255,200,100,0.2);
+            color: rgba(255,200,100,0.9);
         }
 
-        .angle-badge {
-            background: rgba(255, 200, 100, 0.2);
-            color: rgba(255, 200, 100, 0.9);
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 600;
+        .badge-pro {
+            background: linear-gradient(135deg, var(--accent), transparent);
+            color: var(--text-primary);
         }
 
-        /* Mode Toggle */
-        .mode-toggle {
+        /* MODE TOGGLE */
+        .mode-bar {
             display: flex;
-            padding: 12px 16px 8px;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 12px 6px;
+            gap: 6px;
+            background: rgba(0,0,0,0.15);
+            overflow-x: auto;
         }
 
-        .mode-btn {
-            flex: 1;
-            padding: 6px;
+        .mode-bar::-webkit-scrollbar { display: none; }
+
+        .mode-tab {
+            flex-shrink: 0;
+            padding: 6px 14px;
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 8px;
-            color: rgba(255,255,255,0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-secondary);
             font-size: 12px;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
-        .mode-btn.active {
-            background: rgba(100, 180, 255, 0.2);
-            border-color: rgba(100, 180, 255, 0.5);
-            color: rgba(100, 180, 255, 1);
+        .mode-tab.active {
+            background: rgba(100,180,255,0.15);
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
-        /* Buttons Grid */
+        /* BUTTONS */
         .buttons {
-            padding: 12px;
+            padding: 10px;
             display: grid;
-            gap: 8px;
+            gap: 7px;
         }
 
-        .buttons.standard-mode {
-            grid-template-columns: repeat(4, 1fr);
-        }
-
-        .buttons.scientific-mode {
-            grid-template-columns: repeat(5, 1fr);
-        }
+        .buttons.standard-grid { grid-template-columns: repeat(4, 1fr); }
+        .buttons.scientific-grid { grid-template-columns: repeat(5, 1fr); }
 
         .btn {
-            padding: 0;
             height: 56px;
             border: none;
             border-radius: 14px;
@@ -175,10 +422,53 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
             border: 1px solid transparent;
+            flex-direction: column;
+        }
+
+        .btn:active { transform: scale(0.94); }
+
+        .btn-number {
+            background: var(--btn-number-bg);
+            color: var(--btn-number-color);
+            border-color: var(--border-color);
+        }
+
+        .btn-operator {
+            background: var(--btn-operator-bg);
+            color: var(--btn-operator-color);
+        }
+
+        .btn-function {
+            background: var(--btn-function-bg);
+            color: var(--btn-function-color);
+            font-size: 13px;
+        }
+
+        .btn-equals {
+            background: var(--btn-equals-bg);
+            color: #fff;
+            font-size: 22px;
+            box-shadow: 0 4px 15px rgba(79,172,254,0.3);
+        }
+
+        .btn-clear {
+            background: var(--btn-clear-bg);
+            color: var(--btn-clear-color);
+        }
+
+        .btn-special {
+            background: var(--btn-special-bg);
+            color: var(--btn-special-color);
+            font-size: 13px;
+        }
+
+        .btn-memory {
+            background: var(--btn-memory-bg);
+            color: var(--btn-memory-color);
+            font-size: 12px;
         }
 
         .btn::after {
@@ -186,979 +476,1846 @@
             position: absolute;
             inset: 0;
             background: rgba(255,255,255,0);
-            transition: background 0.15s ease;
+            transition: background 0.15s;
         }
 
-        .btn:hover::after {
-            background: rgba(255,255,255,0.1);
+        .btn:hover::after { background: rgba(255,255,255,0.08); }
+        .btn:active::after { background: rgba(255,255,255,0.15); }
+
+        /* PANELS */
+        .side-panel {
+            flex: 1;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .btn:active::after {
-            background: rgba(255,255,255,0.2);
+        .panel-card {
+            background: var(--calc-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.4s;
         }
 
-        .btn:active {
-            transform: scale(0.95);
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: rgba(0,0,0,0.15);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        /* Button Types */
-        .btn-number {
-            background: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
-            border-color: rgba(255,255,255,0.05);
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-operator {
-            background: rgba(100, 160, 255, 0.15);
-            color: #7eb8ff;
-            border-color: rgba(100, 160, 255, 0.2);
+        .panel-body {
+            padding: 16px;
         }
 
-        .btn-function {
-            background: rgba(255, 255, 255, 0.05);
-            color: rgba(200, 200, 255, 0.9);
-            font-size: 13px;
-            border-color: rgba(255,255,255,0.05);
+        /* GRAPH PANEL */
+        .graph-input-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
-        .btn-equals {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        .graph-input {
+            flex: 1;
+            min-width: 140px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .graph-input:focus {
+            border-color: var(--accent);
+        }
+
+        .graph-btn {
+            padding: 10px 20px;
+            background: var(--btn-equals-bg);
+            border: none;
+            border-radius: 10px;
             color: #fff;
-            font-size: 22px;
-            box-shadow: 0 4px 20px rgba(79, 172, 254, 0.4);
-            border-color: transparent;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
         }
 
-        .btn-equals:hover::after {
-            background: rgba(255,255,255,0.15);
-        }
+        .graph-btn:hover { opacity: 0.85; }
 
-        .btn-clear {
-            background: rgba(255, 80, 80, 0.15);
-            color: #ff7070;
-            border-color: rgba(255,80,80,0.2);
-        }
-
-        .btn-special {
-            background: rgba(255, 200, 100, 0.1);
-            color: rgba(255, 200, 150, 0.9);
-            font-size: 13px;
-            border-color: rgba(255,200,100,0.15);
-        }
-
-        .btn-memory {
-            background: rgba(100, 255, 200, 0.1);
-            color: rgba(100, 255, 200, 0.9);
-            font-size: 12px;
-            border-color: rgba(100,255,200,0.15);
-        }
-
-        .btn sub {
-            font-size: 9px;
-            margin-top: 1px;
-        }
-
-        .btn .btn-label {
-            font-size: 11px;
-            color: rgba(255,255,255,0.4);
-            margin-top: 1px;
-        }
-
-        /* History Panel */
-        .history-panel {
-            display: none;
-            padding: 12px;
+        .graph-container {
+            position: relative;
             background: rgba(0,0,0,0.3);
-            max-height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 280px;
+        }
+
+        .graph-functions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .graph-fn-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.04);
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+
+        .fn-color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .fn-label {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+
+        .fn-remove {
+            background: none;
+            border: none;
+            color: var(--btn-clear-color);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* HISTORY PANEL */
+        .history-list {
+            max-height: 280px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
-        .history-panel.open {
-            display: block;
-        }
-
-        .history-title {
-            font-size: 12px;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 8px;
+        .history-item {
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .history-clear-btn {
-            background: none;
-            border: none;
-            color: rgba(255,100,100,0.7);
-            font-size: 11px;
-            cursor: pointer;
-        }
+        .history-item:hover { background: rgba(255,255,255,0.09); }
 
-        .history-item {
-            padding: 8px 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-            margin-bottom: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .history-item:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .history-item .expr {
+        .history-item .h-expr {
             font-size: 12px;
-            color: rgba(255,255,255,0.4);
+            color: var(--text-secondary);
         }
 
-        .history-item .result {
-            font-size: 16px;
+        .history-item .h-result {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .history-time {
+            font-size: 10px;
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        /* THEME PANEL */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .theme-card {
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .theme-card:hover { transform: translateY(-3px); }
+
+        .theme-card.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(79,172,254,0.4);
+        }
+
+        .theme-preview {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .theme-name {
+            text-align: center;
+            font-size: 11px;
+            padding: 6px;
+            background: rgba(0,0,0,0.3);
+            color: var(--text-primary);
+        }
+
+        .theme-check {
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .theme-card.active .theme-check { display: block; }
+
+        /* CONVERTER PANEL */
+        .converter-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .converter-tab {
+            flex-shrink: 0;
+            padding: 5px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .converter-tab.active {
+            background: rgba(100,180,255,0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .converter-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .converter-input {
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .converter-select {
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(30,30,60,0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .converter-result {
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .conv-result-val {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .conv-result-unit {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* INSTALL PROMPT */
+        .install-prompt {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20,20,40,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px 20px;
+            width: 90%;
+            max-width: 380px;
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(100%); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .install-prompt.visible { display: block; }
+
+        .install-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .install-icon {
+            font-size: 32px;
+        }
+
+        .install-text h3 {
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .install-text p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .install-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .install-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .install-btn-primary {
+            background: var(--btn-equals-bg);
             color: #fff;
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
+        .install-btn-secondary {
+            background: rgba(255,255,255,0.08);
+            color: var(--text-secondary);
         }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
+        /* MONETIZATION MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 4px;
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: rgba(20,20,50,0.95);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 28px;
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            animation: modalIn 0.3s ease;
         }
 
-        /* Error animation */
+        @keyframes modalIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(255,255,255,0.08);
+            border: none;
+            color: var(--text-primary);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .modal h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .modal p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .pro-features {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .pro-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 10px;
+        }
+
+        .pro-feature-icon { font-size: 20px; }
+        .pro-feature-text { font-size: 13px; color: var(--text-primary); }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .pricing-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent);
+            background: rgba(79,172,254,0.1);
+        }
+
+        .pricing-card .price {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .pricing-card .period {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .pricing-card .plan-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 6px;
+            color: var(--accent);
+        }
+
+        .purchase-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--btn-equals-bg);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px 14px;
+            text-align: center;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* FOOTER */
+        .app-footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .footer-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        /* ANIMATIONS */
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
+            0%,100% { transform: translateX(0); }
             20% { transform: translateX(-8px); }
             40% { transform: translateX(8px); }
             60% { transform: translateX(-4px); }
             80% { transform: translateX(4px); }
         }
 
-        .shake {
-            animation: shake 0.4s ease;
-        }
+        .shake { animation: shake 0.4s ease; }
 
-        /* Ripple effect */
         .ripple {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255,255,255,0.25);
             transform: scale(0);
-            animation: ripple-anim 0.4s linear;
+            animation: rippleAnim 0.5s linear;
             pointer-events: none;
         }
 
-        @keyframes ripple-anim {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
+        @keyframes rippleAnim {
+            to { transform: scale(4); opacity: 0; }
         }
 
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 8px;
-            font-size: 11px;
-            color: rgba(255,255,255,0.2);
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .calc-area { flex-direction: column; align-items: center; }
+            .side-panel { max-width: 440px; width: 100%; }
         }
 
-        /* Responsive */
-        @media (max-width: 380px) {
-            .btn {
-                height: 50px;
-                font-size: 14px;
-            }
-
-            .btn-function {
-                font-size: 11px;
-            }
-
-            .display-main {
-                font-size: 40px;
-            }
+        @media (max-width: 400px) {
+            .btn { height: 50px; font-size: 14px; }
+            .btn-function { font-size: 11px; }
+            .display-main { font-size: 38px; }
+            .pricing-cards { grid-template-columns: 1fr; }
         }
 
-        @media (min-width: 480px) {
-            .calculator-wrapper {
-                max-width: 480px;
-            }
+        /* NOTIFICATION */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(20,20,50,0.95);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 13px;
+            color: var(--text-primary);
+            z-index: 999;
+            animation: notifIn 0.3s ease;
+            max-width: 280px;
         }
 
-        /* Tooltip */
-        .btn[data-tip]:hover::before {
-            content: attr(data-tip);
-            position: absolute;
-            bottom: calc(100% + 6px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: #fff;
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            white-space: nowrap;
-            z-index: 100;
-            pointer-events: none;
+        @keyframes notifIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
-<body>
-<div class="calculator-wrapper">
-    <div class="calculator">
+<body data-theme="dark">
 
-        <!-- Display -->
-        <div class="display" id="display">
-            <div class="memory-indicator">
-                <span class="mem-badge" id="memBadge">M</span>
-                <span class="angle-badge" id="angleBadge">DEG</span>
+<!-- APP CONTAINER -->
+<div class="app-container">
+
+    <!-- TOP NAV -->
+    <nav class="top-nav">
+        <div class="app-logo">
+            <span class="logo-icon">🧮</span>
+            <span>ProCalc</span>
+            <span class="badge badge-pro" style="font-size:9px;padding:2px 6px;">PRO</span>
+        </div>
+        <div class="nav-actions">
+            <button class="nav-btn" onclick="openModal('themeModal')">🎨 Theme</button>
+            <button class="nav-btn" onclick="openModal('proModal')">⭐ Upgrade</button>
+            <button class="nav-btn" id="installBtn" onclick="installApp()" style="display:none;">📲 Install</button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP AD -->
+        <div class="ad-banner">
+            <div class="ad-inner">
+                <span class="ad-label">Advertisement</span>
+                <span style="font-size:14px;color:var(--text-secondary);">
+                    <!-- Replace with actual Google AdSense code -->
+                    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
+                    Your Ad Here · Google AdSense Banner (728×90)
+                </span>
             </div>
-            <div class="display-history" id="displayHistory"></div>
-            <div class="display-expression" id="displayExpression"></div>
-            <div class="display-main" id="displayMain">0</div>
         </div>
 
-        <!-- Mode Toggles -->
-        <div class="mode-toggle">
-            <button class="mode-btn active" id="btnStandard" onclick="setMode('standard')">Standard</button>
-            <button class="mode-btn" id="btnScientific" onclick="setMode('scientific')">Scientific</button>
-            <button class="mode-btn" id="btnHistory" onclick="toggleHistory()">History</button>
-        </div>
+        <!-- CALC AREA -->
+        <div class="calc-area">
 
-        <!-- History Panel -->
-        <div class="history-panel" id="historyPanel">
-            <div class="history-title">
-                <span>Calculation History</span>
-                <button class="history-clear-btn" onclick="clearHistory()">Clear All</button>
+            <!-- CALCULATOR -->
+            <div class="calculator-wrapper">
+                <div class="calculator">
+
+                    <!-- DISPLAY -->
+                    <div class="display" id="display">
+                        <div class="display-badges">
+                            <span class="badge badge-mem" id="memBadge">M</span>
+                            <span class="badge badge-angle" id="angleBadge">DEG</span>
+                        </div>
+                        <div class="display-history" id="displayHistory"></div>
+                        <div class="display-expression" id="displayExpression"></div>
+                        <div class="display-main" id="displayMain">0</div>
+                    </div>
+
+                    <!-- MODE BAR -->
+                    <div class="mode-bar">
+                        <button class="mode-tab active" id="tab-standard" onclick="setMode('standard')">Standard</button>
+                        <button class="mode-tab" id="tab-scientific" onclick="setMode('scientific')">Scientific</button>
+                        <button class="mode-tab" id="tab-history" onclick="setMode('history')">History</button>
+                    </div>
+
+                    <!-- STANDARD BUTTONS -->
+                    <div class="buttons standard-grid" id="buttons-standard">
+                        <button class="btn btn-special" onclick="memAct('MC',$event)">MC</button>
+                        <button class="btn btn-special" onclick="memAct('MR',$event)">MR</button>
+                        <button class="btn btn-special" onclick="memAct('M+',$event)">M+</button>
+                        <button class="btn btn-special" onclick="memAct('M-',$event)">M−</button>
+
+                        <button class="btn btn-clear" onclick="clearAll(event)">AC</button>
+                        <button class="btn btn-function" onclick="toggleSign(event)">+/−</button>
+                        <button class="btn btn-function" onclick="percentage(event)">%</button>
+                        <button class="btn btn-operator" onclick="appendOp('÷',event)">÷</button>
+
+                        <button class="btn btn-number" onclick="appendNum('7',event)">7</button>
+                        <button class="btn btn-number" onclick="appendNum('8',event)">8</button>
+                        <button class="btn btn-number" onclick="appendNum('9',event)">9</button>
+                        <button class="btn btn-operator" onclick="appendOp('×',event)">×</button>
+
+                        <button class="btn btn-number" onclick="appendNum('4',event)">4</button>
+                        <button class="btn btn-number" onclick="appendNum('5',event)">5</button>
+                        <button class="btn btn-number" onclick="appendNum('6',event)">6</button>
+                        <button class="btn btn-operator" onclick="appendOp('−',event)">−</button>
+
+                        <button class="btn btn-number" onclick="appendNum('1',event)">1</button>
+                        <button class="btn btn-number" onclick="appendNum('2',event)">2</button>
+                        <button class="btn btn-number" onclick="appendNum('3',event)">3</button>
+                        <button class="btn btn-operator" onclick="appendOp('+',event)">+</button>
+
+                        <button class="btn btn-number" onclick="appendNum('0',event)" style="grid-column:span 2;justify-content:flex-start;padding-left:22px">0</button>
+                        <button class="btn btn-number" onclick="appendDec(event)">.</button>
+                        <button class="btn btn-equals" onclick="calculate(event)">=</button>
+                    </div>
+
+                    <!-- SCIENTIFIC BUTTONS -->
+                    <div class="buttons scientific-grid" id="buttons-scientific" style="display:none">
+                        <button class="btn btn-memory" onclick="memAct('MC',event)">MC</button>
+                        <button class="btn btn-memory" onclick="memAct('MR',event)">MR</button>
+                        <button class="btn btn-memory" onclick="memAct('MS',event)">MS</button>
+                        <button class="btn btn-memory" onclick="memAct('M+',event)">M+</button>
+                        <button class="btn btn-memory" onclick="memAct('M-',event)">M−</button>
+
+                        <button class="btn btn-function" onclick="toggle2nd(event)" id="btn2nd">2nd</button>
+                        <button class="btn btn-function" onclick="sciFn('sin',event)" id="btnSin">sin</button>
+                        <button class="btn btn-function" onclick="sciFn('cos',event)" id="btnCos">cos</button>
+                        <button class="btn btn-function" onclick="sciFn('tan',event)" id="btnTan">tan</button>
+                        <button class="btn btn-function" onclick="toggleAngle(event)" id="btnAngle">DEG</button>
+
+                        <button class="btn btn-function" onclick="sciFn('x²',event)">x²</button>
+                        <button class="btn btn-function" onclick="sciFn('x³',event)">x³</button>
+                        <button class="btn btn-function" onclick="sciFn('xⁿ',event)">xʸ</button>
+                        <button class="btn btn-function" onclick="sciFn('eˣ',event)">eˣ</button>
+                        <button class="btn btn-function" onclick="sciFn('10ˣ',event)">10ˣ</button>
+
+                        <button class="btn btn-function" onclick="sciFn('√',event)">√x</button>
+                        <button class="btn btn-function" onclick="sciFn('∛',event)">∛x</button>
+                        <button class="btn btn-function" onclick="sciFn('ʸ√',event)">ʸ√x</button>
+                        <button class="btn btn-function" onclick="sciFn('ln',event)">ln</button>
+                        <button class="btn btn-function" onclick="sciFn('log',event)">log</button>
+
+                        <button class="btn btn-function" onclick="sciFn('(',event)">(</button>
+                        <button class="btn btn-function" onclick="sciFn(')',event)">)</button>
+                        <button class="btn btn-function" onclick="sciFn('1/x',event)">1/x</button>
+                        <button class="btn btn-function" onclick="sciFn('|x|',event)">|x|</button>
+                        <button class="btn btn-function" onclick="sciFn('n!',event)">n!</button>
+
+                        <button class="btn btn-function" onclick="sciFn('π',event)">π</button>
+                        <button class="btn btn-function" onclick="sciFn('e',event)">e</button>
+                        <button class="btn btn-function" onclick="sciFn('Rand',event)">Rand</button>
+                        <button class="btn btn-clear" onclick="backspace(event)" style="font-size:18px">⌫</button>
+                        <button class="btn btn-clear" onclick="clearAll(event)">AC</button>
+
+                        <button class="btn btn-function" onclick="toggleSign(event)">+/−</button>
+                        <button class="btn btn-number" onclick="appendNum('7',event)">7</button>
+                        <button class="btn btn-number" onclick="appendNum('8',event)">8</button>
+                        <button class="btn btn-number" onclick="appendNum('9',event)">9</button>
+                        <button class="btn btn-operator" onclick="appendOp('÷',event)">÷</button>
+
+                        <button class="btn btn-function" onclick="percentage(event)">%</button>
+                        <button class="btn btn-number" onclick="appendNum('4',event)">4</button>
+                        <button class="btn btn-number" onclick="appendNum('5',event)">5</button>
+                        <button class="btn btn-number" onclick="appendNum('6',event)">6</button>
+                        <button class="btn btn-operator" onclick="appendOp('×',event)">×</button>
+
+                        <button class="btn btn-function" onclick="sciFn('EE',event)">EE</button>
+                        <button class="btn btn-number" onclick="appendNum('1',event)">1</button>
+                        <button class="btn btn-number" onclick="appendNum('2',event)">2</button>
+                        <button class="btn btn-number" onclick="appendNum('3',event)">3</button>
+                        <button class="btn btn-operator" onclick="appendOp('−',event)">−</button>
+
+                        <button class="btn btn-function" onclick="backspace(event)" style="font-size:16px">⌫</button>
+                        <button class="btn btn-number" onclick="appendNum('0',event)" style="grid-column:span 2;justify-content:flex-start;padding-left:22px">0</button>
+                        <button class="btn btn-number" onclick="appendDec(event)">.</button>
+                        <button class="btn btn-operator" onclick="appendOp('+',event)">+</button>
+
+                        <button class="btn btn-equals" onclick="calculate(event)" style="grid-column:span 5;height:52px;font-size:22px">=</button>
+                    </div>
+
+                    <!-- HISTORY IN CALC -->
+                    <div id="buttons-history" style="display:none;padding:12px">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                            <span style="font-size:13px;color:var(--text-secondary)">Calculation History</span>
+                            <button onclick="clearHistory()" style="background:none;border:none;color:var(--btn-clear-color);font-size:12px;cursor:pointer">Clear All</button>
+                        </div>
+                        <div class="history-list" id="calcHistoryList"></div>
+                    </div>
+
+                </div>
+
+                <!-- STATS -->
+                <div class="stats-bar" id="statsBar">
+                    <div class="stat-item">
+                        <div class="stat-value" id="statCalcs">0</div>
+                        <div class="stat-label">Calculations</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statSession">0:00</div>
+                        <div class="stat-label">Session</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statGraphs">0</div>
+                        <div class="stat-label">Graphs</div>
+                    </div>
+                </div>
             </div>
-            <div id="historyList"></div>
+
+            <!-- SIDE PANELS -->
+            <div class="side-panel">
+
+                <!-- GRAPH PANEL -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <div class="panel-title">📈 Function Grapher</div>
+                        <button class="nav-btn" onclick="clearGraph()" style="font-size:11px;padding:4px 10px">Clear</button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="graph-functions-list" id="graphFnList"></div>
+                        <div class="graph-input-row">
+                            <input class="graph-input" id="graphInput" placeholder="y = sin(x), x^2, etc." onkeydown="if(event.key==='Enter')plotGraph()"/>
+                            <button class="graph-btn" onclick="plotGraph()">Plot</button>
+                        </div>
+                        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+                            <div style="flex:1;min-width:80px">
+                                <label style="font-size:11px;color:var(--text-secondary)">X Min</label>
+                                <input class="graph-input" id="xMin" value="-10" style="margin-top:2px;height:36px;font-size:13px"/>
+                            </div>
+                            <div style="flex:1;min-width:80px">
+                                <label style="font-size:11px;color:var(--text-secondary)">X Max</label>
+                                <input class="graph-input" id="xMax" value="10" style="margin-top:2px;height:36px;font-size:13px"/>
+                            </div>
+                        </div>
+                        <div class="graph-container">
+                            <canvas id="graphCanvas"></canvas>
+                        </div>
+                        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+                            <button class="nav-btn" onclick="quickPlot('sin(x)')">sin(x)</button>
+                            <button class="nav-btn" onclick="quickPlot('cos(x)')">cos(x)</button>
+                            <button class="nav-btn" onclick="quickPlot('x^2')">x²</button>
+                            <button class="nav-btn" onclick="quickPlot('tan(x)')">tan(x)</button>
+                            <button class="nav-btn" onclick="quickPlot('Math.sqrt(x)')">√x</button>
+                            <button class="nav-btn" onclick="quickPlot('Math.log(x)')">ln(x)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONVERTER PANEL -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <div class="panel-title">🔄 Unit Converter</div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="converter-tabs" id="converterTabs">
+                            <button class="converter-tab active" onclick="setConverter('length',this)">Length</button>
+                            <button class="converter-tab" onclick="setConverter('weight',this)">Weight</button>
+                            <button class="converter-tab" onclick="setConverter('temp',this)">Temp</button>
+                            <button class="converter-tab" onclick="setConverter('area',this)">Area</button>
+                            <button class="converter-tab" onclick="setConverter('speed',this)">Speed</button>
+                            <button class="converter-tab" onclick="setConverter('data',this)">Data</button>
+                        </div>
+                        <div class="converter-row">
+                            <input class="converter-input" id="convInput" type="number" value="1" oninput="doConvert()"/>
+                            <select class="converter-select" id="convFrom" onchange="doConvert()"></select>
+                        </div>
+                        <div style="text-align:center;font-size:22px;color:var(--accent);margin:4px 0">⇅</div>
+                        <div class="converter-row">
+                            <div style="flex:1"></div>
+                            <select class="converter-select" id="convTo" onchange="doConvert()"></select>
+                        </div>
+                        <div class="converter-result">
+                            <div>
+                                <div class="h-expr" id="convExpr" style="font-size:12px;color:var(--text-secondary)">Result</div>
+                                <div class="conv-result-val" id="convResult">—</div>
+                            </div>
+                            <button class="nav-btn" onclick="copyConvResult()">Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HISTORY SIDE PANEL -->
+                <div class="panel-card">
+                    <div class="panel-header">
+                        <div class="panel-title">📋 History</div>
+                        <button onclick="clearHistory()" style="background:none;border:none;color:var(--btn-clear-color);font-size:12px;cursor:pointer">Clear</button>
+                    </div>
+                    <div class="panel-body" style="padding:10px">
+                        <div class="history-list" id="sideHistoryList"></div>
+                    </div>
+                </div>
+
+                <!-- SIDE AD -->
+                <div class="ad-banner" style="max-width:100%;min-height:250px">
+                    <div class="ad-inner">
+                        <span class="ad-label">Advertisement</span>
+                        <span style="font-size:14px;color:var(--text-secondary)">
+                            <!-- Replace with Google AdSense 300x250 -->
+                            Your Ad Here · (300×250)
+                        </span>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
-        <!-- Standard Buttons -->
-        <div class="buttons standard-mode" id="standardButtons">
-            <!-- Row 1 -->
-            <button class="btn btn-special" onclick="memoryAction('MC')" data-tip="Memory Clear">MC</button>
-            <button class="btn btn-special" onclick="memoryAction('MR')" data-tip="Memory Recall">MR</button>
-            <button class="btn btn-special" onclick="memoryAction('M+')" data-tip="Memory Add">M+</button>
-            <button class="btn btn-special" onclick="memoryAction('M-')" data-tip="Memory Subtract">M−</button>
-
-            <!-- Row 2 -->
-            <button class="btn btn-clear" onclick="clearAll()">AC</button>
-            <button class="btn btn-function" onclick="toggleSign()" data-tip="Toggle Sign">+/−</button>
-            <button class="btn btn-function" onclick="percentage()" data-tip="Percentage">%</button>
-            <button class="btn btn-operator" onclick="appendOperator('÷')">÷</button>
-
-            <!-- Row 3 -->
-            <button class="btn btn-number" onclick="appendNumber('7')">7</button>
-            <button class="btn btn-number" onclick="appendNumber('8')">8</button>
-            <button class="btn btn-number" onclick="appendNumber('9')">9</button>
-            <button class="btn btn-operator" onclick="appendOperator('×')">×</button>
-
-            <!-- Row 4 -->
-            <button class="btn btn-number" onclick="appendNumber('4')">4</button>
-            <button class="btn btn-number" onclick="appendNumber('5')">5</button>
-            <button class="btn btn-number" onclick="appendNumber('6')">6</button>
-            <button class="btn btn-operator" onclick="appendOperator('−')">−</button>
-
-            <!-- Row 5 -->
-            <button class="btn btn-number" onclick="appendNumber('1')">1</button>
-            <button class="btn btn-number" onclick="appendNumber('2')">2</button>
-            <button class="btn btn-number" onclick="appendNumber('3')">3</button>
-            <button class="btn btn-operator" onclick="appendOperator('+')">+</button>
-
-            <!-- Row 6 -->
-            <button class="btn btn-number" onclick="appendNumber('0')" style="grid-column: span 2; justify-content: flex-start; padding-left: 22px;">0</button>
-            <button class="btn btn-number" onclick="appendDecimal()">.</button>
-            <button class="btn btn-equals" onclick="calculate()">=</button>
+        <!-- BOTTOM AD -->
+        <div class="ad-banner">
+            <div class="ad-inner">
+                <span class="ad-label">Advertisement</span>
+                <span style="font-size:14px;color:var(--text-secondary)">
+                    <!-- Replace with Google AdSense Footer Banner -->
+                    Your Ad Here · Google AdSense Banner (728×90)
+                </span>
+            </div>
         </div>
 
-        <!-- Scientific Buttons -->
-        <div class="buttons scientific-mode" id="scientificButtons" style="display:none;">
-            <!-- Memory Row -->
-            <button class="btn btn-memory" onclick="memoryAction('MC')" data-tip="Memory Clear">MC</button>
-            <button class="btn btn-memory" onclick="memoryAction('MR')" data-tip="Memory Recall">MR</button>
-            <button class="btn btn-memory" onclick="memoryAction('MS')" data-tip="Memory Store">MS</button>
-            <button class="btn btn-memory" onclick="memoryAction('M+')" data-tip="Memory Add">M+</button>
-            <button class="btn btn-memory" onclick="memoryAction('M-')" data-tip="Memory Subtract">M−</button>
+    </main>
 
-            <!-- Scientific Row 1 -->
-            <button class="btn btn-function" onclick="sciFunction('2nd')" id="btn2nd">2nd</button>
-            <button class="btn btn-function" onclick="sciFunction('sin')" id="btnSin">sin</button>
-            <button class="btn btn-function" onclick="sciFunction('cos')" id="btnCos">cos</button>
-            <button class="btn btn-function" onclick="sciFunction('tan')" id="btnTan">tan</button>
-            <button class="btn btn-function" onclick="toggleAngle()" id="btnAngle">DEG</button>
-
-            <!-- Scientific Row 2 -->
-            <button class="btn btn-function" onclick="sciFunction('x²')" data-tip="Square">x²</button>
-            <button class="btn btn-function" onclick="sciFunction('x³')" data-tip="Cube">x³</button>
-            <button class="btn btn-function" onclick="sciFunction('xⁿ')" data-tip="Power">xʸ</button>
-            <button class="btn btn-function" onclick="sciFunction('eˣ')" data-tip="e to the power x">eˣ</button>
-            <button class="btn btn-function" onclick="sciFunction('10ˣ')" data-tip="10 to the power x">10ˣ</button>
-
-            <!-- Scientific Row 3 -->
-            <button class="btn btn-function" onclick="sciFunction('√')" data-tip="Square Root">√x</button>
-            <button class="btn btn-function" onclick="sciFunction('∛')" data-tip="Cube Root">∛x</button>
-            <button class="btn btn-function" onclick="sciFunction('ʸ√')" data-tip="y-th root">ʸ√x</button>
-            <button class="btn btn-function" onclick="sciFunction('ln')" data-tip="Natural Log">ln</button>
-            <button class="btn btn-function" onclick="sciFunction('log')" data-tip="Log base 10">log</button>
-
-            <!-- Scientific Row 4 -->
-            <button class="btn btn-function" onclick="sciFunction('(')" data-tip="Open Parenthesis">(</button>
-            <button class="btn btn-function" onclick="sciFunction(')')" data-tip="Close Parenthesis">)</button>
-            <button class="btn btn-function" onclick="sciFunction('1/x')" data-tip="Reciprocal">1/x</button>
-            <button class="btn btn-function" onclick="sciFunction('|x|')" data-tip="Absolute Value">|x|</button>
-            <button class="btn btn-function" onclick="sciFunction('n!')" data-tip="Factorial">n!</button>
-
-            <!-- Scientific Row 5 -->
-            <button class="btn btn-function" onclick="sciFunction('π')" data-tip="Pi">π</button>
-            <button class="btn btn-function" onclick="sciFunction('e')" data-tip="Euler's Number">e</button>
-            <button class="btn btn-function" onclick="sciFunction('Rand')" data-tip="Random Number">Rand</button>
-            <button class="btn btn-clear" onclick="backspace()" data-tip="Backspace" style="font-size:18px;">⌫</button>
-            <button class="btn btn-clear" onclick="clearAll()">AC</button>
-
-            <!-- Number Row 1 -->
-            <button class="btn btn-function" onclick="toggleSign()" data-tip="Toggle Sign">+/−</button>
-            <button class="btn btn-number" onclick="appendNumber('7')">7</button>
-            <button class="btn btn-number" onclick="appendNumber('8')">8</button>
-            <button class="btn btn-number" onclick="appendNumber('9')">9</button>
-            <button class="btn btn-operator" onclick="appendOperator('÷')">÷</button>
-
-            <!-- Number Row 2 -->
-            <button class="btn btn-function" onclick="percentage()" data-tip="Percentage">%</button>
-            <button class="btn btn-number" onclick="appendNumber('4')">4</button>
-            <button class="btn btn-number" onclick="appendNumber('5')">5</button>
-            <button class="btn btn-number" onclick="appendNumber('6')">6</button>
-            <button class="btn btn-operator" onclick="appendOperator('×')">×</button>
-
-            <!-- Number Row 3 -->
-            <button class="btn btn-function" onclick="sciFunction('EE')" data-tip="Scientific Notation">EE</button>
-            <button class="btn btn-number" onclick="appendNumber('1')">1</button>
-            <button class="btn btn-number" onclick="appendNumber('2')">2</button>
-            <button class="btn btn-number" onclick="appendNumber('3')">3</button>
-            <button class="btn btn-operator" onclick="appendOperator('−')">−</button>
-
-            <!-- Number Row 4 -->
-            <button class="btn btn-function" onclick="backspace()" style="font-size:16px;">⌫</button>
-            <button class="btn btn-number" onclick="appendNumber('0')" style="grid-column: span 2; justify-content: flex-start; padding-left: 22px;">0</button>
-            <button class="btn btn-number" onclick="appendDecimal()">.</button>
-            <button class="btn btn-operator" onclick="appendOperator('+')">+</button>
-
-            <!-- Equals Row -->
-            <button class="btn btn-equals" onclick="calculate()" style="grid-column: span 5; height: 52px; font-size: 22px;">=</button>
+    <!-- FOOTER -->
+    <footer class="app-footer">
+        <div>© 2024 ProCalc · Professional Scientific Calculator</div>
+        <div class="footer-links">
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link" onclick="openModal('proModal');return false">Upgrade to Pro</a>
+            <a href="#" class="footer-link" onclick="shareApp();return false">Share App</a>
         </div>
+    </footer>
+</div>
 
-        <div class="footer">Scientific Calculator</div>
+<!-- INSTALL PROMPT -->
+<div class="install-prompt" id="installPrompt">
+    <div class="install-header">
+        <div class="install-icon">🧮</div>
+        <div class="install-text">
+            <h3>Install ProCalc</h3>
+            <p>Add to your home screen for quick access — works offline!</p>
+        </div>
+    </div>
+    <div class="install-actions">
+        <button class="install-btn install-btn-primary" onclick="installApp()">Install App</button>
+        <button class="install-btn install-btn-secondary" onclick="dismissInstall()">Not Now</button>
+    </div>
+</div>
+
+<!-- THEME MODAL -->
+<div class="modal-overlay" id="themeModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('themeModal')">✕</button>
+        <h2>🎨 Choose Theme</h2>
+        <p>Personalize your calculator with beautiful themes.</p>
+        <div class="theme-grid">
+            <div class="theme-card active" id="theme-dark" onclick="applyTheme('dark')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#0f0c29,#302b63)">🌙</div>
+                <div class="theme-name">Dark</div>
+                <span class="theme-check">✅</span>
+            </div>
+            <div class="theme-card" id="theme-light" onclick="applyTheme('light')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#e8ecf4,#d5dde8)">☀️</div>
+                <div class="theme-name">Light</div>
+                <span class="theme-check">✅</span>
+            </div>
+            <div class="theme-card" id="theme-neon" onclick="applyTheme('neon')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#000,#001a00)">💚</div>
+                <div class="theme-name">Neon</div>
+                <span class="theme-check">✅</span>
+            </div>
+            <div class="theme-card" id="theme-sunset" onclick="applyTheme('sunset')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#1a1a2e,#f953c6)">🌅</div>
+                <div class="theme-name">Sunset</div>
+                <span class="theme-check">✅</span>
+            </div>
+            <div class="theme-card" id="theme-ocean" onclick="applyTheme('ocean')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#000428,#004e92)">🌊</div>
+                <div class="theme-name">Ocean</div>
+                <span class="theme-check">✅</span>
+            </div>
+            <div class="theme-card" onclick="openModal('proModal')">
+                <div class="theme-preview" style="background:linear-gradient(135deg,#333,#555)">🔒</div>
+                <div class="theme-name">More (Pro)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PRO / MONETIZE MODAL -->
+<div class="modal-overlay" id="proModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('proModal')">✕</button>
+        <h2>⭐ Upgrade to Pro</h2>
+        <p>Unlock the full power of ProCalc with unlimited features.</p>
+        <div class="pro-features">
+            <div class="pro-feature-item">
+                <span class="pro-feature-icon">📈</span>
+                <span class="pro-feature-text">Advanced graphing with multiple functions</span>
+            </div>
+            <div class="pro-feature-item">
+                <span class="pro-feature-icon">🎨</span>
+                <span class="pro-feature-text">All premium themes & custom colors</span>
+            </div>
+            <div class="pro-feature-item">
+                <span class="pro-feature-icon">🔄</span>
+                <span class="pro-feature-text">Full unit converter (50+ units)</span>
+            </div>
+            <div class="pro-feature-item">
+                <span class="pro-feature-icon">☁️</span>
+                <span class="pro-feature-text">Cloud sync history across devices</span>
+            </div>
+            <div class="pro-feature-item">
+                <span class="pro-feature-icon">🚫</span>
+                <span class="pro-feature-text">Remove all advertisements</span>
+            </div>
+            <div class="pro-feature-item">
+                <span class="pro-feature-icon">📱</span>
+                <span class="pro-feature-text">Android & iOS native app access</span>
+            </div>
+        </div>
+        <div class="pricing-cards">
+            <div class="pricing-card" onclick="selectPlan('monthly')">
+                <div class="price">$1.99</div>
+                <div class="period">per month</div>
+                <div class="plan-name">Monthly</div>
+            </div>
+            <div class="pricing-card featured" onclick="selectPlan('yearly')">
+                <div style="font-size:10px;color:#4facfe;margin-bottom:4px;font-weight:700">BEST VALUE</div>
+                <div class="price">$9.99</div>
+                <div class="period">per year</div>
+                <div class="plan-name">Annual · Save 58%</div>
+            </div>
+        </div>
+        <button class="purchase-btn" onclick="purchase()">🚀 Get Pro Now</button>
+        <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-secondary)">
+            7-day free trial · Cancel anytime · Secure payment
+        </div>
     </div>
 </div>
 
 <script>
-    // ============================================================
-    // STATE
-    // ============================================================
-    let state = {
-        currentInput: '0',
-        expression: '',
-        history: [],
-        memory: 0,
-        hasMemory: false,
-        angleMode: 'DEG', // DEG or RAD
-        waitingForOperand: false,
-        pendingOperator: null,
-        pendingValue: null,
-        pendingPowerOp: null,
-        justCalculated: false,
-        mode: 'standard',
-        is2nd: false
-    };
+// ================================================================
+// STATE
+// ================================================================
+const S = {
+    current: '0',
+    pendingVal: null,
+    pendingOp: null,
+    waitingOp: false,
+    justCalc: false,
+    memory: 0,
+    hasMemory: false,
+    angleMode: 'DEG',
+    is2nd: false,
+    history: JSON.parse(localStorage.getItem('calcHistory') || '[]'),
+    mode: 'standard',
+    theme: localStorage.getItem('calcTheme') || 'dark',
+    calcCount: parseInt(localStorage.getItem('calcCount') || '0'),
+    graphCount: parseInt(localStorage.getItem('graphCount') || '0'),
+    sessionStart: Date.now(),
+    graphFunctions: [],
+    chartInstance: null,
+    selectedPlan: 'yearly',
+    converterType: 'length',
+    deferredPrompt: null
+};
 
-    // ============================================================
-    // DISPLAY UPDATE
-    // ============================================================
-    function updateDisplay() {
-        const main = document.getElementById('displayMain');
-        const expr = document.getElementById('displayExpression');
-        const hist = document.getElementById('displayHistory');
+// ================================================================
+// DISPLAY
+// ================================================================
+function updateDisplay() {
+    const main = document.getElementById('displayMain');
+    const expr = document.getElementById('displayExpression');
 
-        main.textContent = state.currentInput;
+    main.textContent = S.current;
+    const len = S.current.length;
+    main.classList.remove('small','xsmall');
+    if (len > 15) main.classList.add('xsmall');
+    else if (len > 10) main.classList.add('small');
 
-        // Adjust font size based on length
-        const len = state.currentInput.length;
-        main.classList.remove('small', 'xsmall');
-        if (len > 15) main.classList.add('xsmall');
-        else if (len > 10) main.classList.add('small');
+    let exprTxt = '';
+    if (S.pendingVal !== null && S.pendingOp) {
+        exprTxt = `${fmtNum(S.pendingVal)} ${S.pendingOp}`;
+    }
+    expr.textContent = exprTxt;
 
-        // Expression
-        let exprText = '';
-        if (state.pendingValue !== null && state.pendingOperator) {
-            exprText = `${formatNumber(state.pendingValue)} ${state.pendingOperator}`;
-        }
-        expr.textContent = exprText;
+    document.getElementById('memBadge').classList.toggle('active', S.hasMemory);
+    document.getElementById('angleBadge').textContent = S.angleMode;
+    const ab = document.getElementById('btnAngle');
+    if (ab) ab.textContent = S.angleMode;
+    updateStats();
+}
 
-        // Memory badge
-        document.getElementById('memBadge').classList.toggle('active', state.hasMemory);
+function fmtNum(n) {
+    if (!isFinite(n) || isNaN(n)) return String(n);
+    const s = String(n);
+    return s.length > 12 ? parseFloat(n.toPrecision(10)).toString() : s;
+}
 
-        // Angle badge
-        document.getElementById('angleBadge').textContent = state.angleMode;
-        document.getElementById('btnAngle').textContent = state.angleMode;
+function fmtResult(n) {
+    if (isNaN(n)) return 'NaN';
+    if (!isFinite(n)) return n > 0 ? 'Infinity' : '-Infinity';
+    let r = parseFloat(n.toPrecision(12));
+    let s = String(r);
+    if (s.length > 15) s = n.toExponential(6);
+    return s;
+}
+
+function showError(msg) {
+    S.current = msg || 'Error';
+    S.waitingOp = true;
+    S.justCalc = false;
+    updateDisplay();
+    const d = document.getElementById('display');
+    d.classList.add('shake');
+    setTimeout(() => d.classList.remove('shake'), 400);
+}
+
+// ================================================================
+// INPUT
+// ================================================================
+function appendNum(d, e) {
+    ripple(e);
+    if (S.waitingOp) { S.current = d; S.waitingOp = false; }
+    else if (S.justCalc) { S.current = d; S.justCalc = false; S.pendingVal = null; S.pendingOp = null; }
+    else {
+        if (S.current === '0' && d !== '.') S.current = d;
+        else if (S.current.length < 16) S.current += d;
+    }
+    updateDisplay();
+}
+
+function appendDec(e) {
+    ripple(e);
+    if (S.waitingOp || S.justCalc) { S.current = '0.'; S.waitingOp = false; S.justCalc = false; }
+    else if (!S.current.includes('.')) S.current += '.';
+    updateDisplay();
+}
+
+function appendOp(op, e) {
+    ripple(e);
+    const cur = parseFloat(S.current);
+    if (S.pendingOp && !S.waitingOp) {
+        const res = computeBasic(S.pendingVal, cur, S.pendingOp);
+        if (res === null) return;
+        S.current = fmtResult(res);
+        S.pendingVal = parseFloat(S.current);
+    } else {
+        S.pendingVal = cur;
+    }
+    S.pendingOp = op;
+    S.waitingOp = true;
+    S.justCalc = false;
+    updateDisplay();
+}
+
+function computeBasic(a, b, op) {
+    switch (op) {
+        case '+': return a + b;
+        case '−': return a - b;
+        case '×': return a * b;
+        case '÷': if (b === 0) { showError('Cannot ÷ 0'); return null; } return a / b;
+        case 'xⁿ': return Math.pow(a, b);
+        case 'ʸ√': return Math.pow(b, 1/a);
+    }
+    return b;
+}
+
+// ================================================================
+// CALCULATE
+// ================================================================
+function calculate(e) {
+    ripple(e);
+    if (!S.pendingOp && S.pendingVal === null) return;
+    if (S.waitingOp) return;
+
+    const cur = parseFloat(S.current);
+    if (isNaN(cur)) return;
+
+    const res = computeBasic(S.pendingVal, cur, S.pendingOp);
+    if (res === null) return;
+
+    const exprStr = `${fmtNum(S.pendingVal)} ${S.pendingOp} ${fmtNum(cur)}`;
+    const resStr = fmtResult(res);
+
+    addHistory(exprStr, resStr);
+    S.calcCount++;
+    localStorage.setItem('calcCount', S.calcCount);
+
+    S.current = resStr;
+    S.pendingVal = null;
+    S.pendingOp = null;
+    S.waitingOp = false;
+    S.justCalc = true;
+    updateDisplay();
+}
+
+// ================================================================
+// CLEAR / BACKSPACE
+// ================================================================
+function clearAll(e) {
+    ripple(e);
+    S.current = '0';
+    S.pendingVal = null;
+    S.pendingOp = null;
+    S.waitingOp = false;
+    S.justCalc = false;
+    updateDisplay();
+}
+
+function backspace(e) {
+    ripple(e);
+    if (S.justCalc || S.waitingOp) { S.current = '0'; S.waitingOp = false; S.justCalc = false; }
+    else S.current = S.current.slice(0,-1) || '0';
+    updateDisplay();
+}
+
+function toggleSign(e) {
+    ripple(e);
+    const v = parseFloat(S.current);
+    if (!isNaN(v)) { S.current = fmtResult(-v); updateDisplay(); }
+}
+
+function percentage(e) {
+    ripple(e);
+    const v = parseFloat(S.current);
+    if (!isNaN(v)) { S.current = fmtResult(v/100); updateDisplay(); }
+}
+
+// ================================================================
+// SCIENTIFIC
+// ================================================================
+function toRad(d) { return d * Math.PI / 180; }
+function toDeg(r) { return r * 180 / Math.PI; }
+function getAng(v) { return S.angleMode === 'DEG' ? toRad(v) : v; }
+
+function toggle2nd(e) {
+    ripple(e);
+    S.is2nd = !S.is2nd;
+    const b = document.getElementById('btn2nd');
+    b.style.background = S.is2nd ? 'rgba(100,200,255,0.3)' : '';
+    const labels = S.is2nd
+        ? { sin:'sin⁻¹', cos:'cos⁻¹', tan:'tan⁻¹' }
+        : { sin:'sin', cos:'cos', tan:'tan' };
+    ['sin','cos','tan'].forEach(k => {
+        const el = document.getElementById('btn'+k.charAt(0).toUpperCase()+k.slice(1));
+        if (el) el.textContent = labels[k];
+    });
+}
+
+function toggleAngle(e) {
+    ripple(e);
+    S.angleMode = S.angleMode === 'DEG' ? 'RAD' : 'DEG';
+    updateDisplay();
+}
+
+function sciFn(fn, e) {
+    ripple(e);
+    const v = parseFloat(S.current);
+    let res;
+
+    if (fn === 'sin' || fn === 'cos' || fn === 'tan') {
+        if (S.is2nd) fn = 'a' + fn;
     }
 
-    function formatNumber(num) {
-        if (isNaN(num) || !isFinite(num)) return String(num);
-        const str = String(num);
-        if (str.length > 12) {
-            return parseFloat(num.toPrecision(10)).toString();
+    try {
+        switch (fn) {
+            case 'sin': res = Math.sin(getAng(v)); break;
+            case 'cos': res = Math.cos(getAng(v)); break;
+            case 'tan':
+                if (S.angleMode==='DEG' && v%180===90) { showError('Undefined'); return; }
+                res = Math.tan(getAng(v)); break;
+            case 'asin': if(Math.abs(v)>1){showError('Domain Error');return;} res=S.angleMode==='DEG'?toDeg(Math.asin(v)):Math.asin(v); break;
+            case 'acos': if(Math.abs(v)>1){showError('Domain Error');return;} res=S.angleMode==='DEG'?toDeg(Math.acos(v)):Math.acos(v); break;
+            case 'atan': res=S.angleMode==='DEG'?toDeg(Math.atan(v)):Math.atan(v); break;
+            case 'x²': res=v*v; break;
+            case 'x³': res=v*v*v; break;
+            case 'xⁿ': S.pendingVal=v; S.pendingOp='xⁿ'; S.waitingOp=true; updateDisplay(); return;
+            case 'eˣ': res=Math.exp(v); break;
+            case '10ˣ': res=Math.pow(10,v); break;
+            case '√': if(v<0){showError('Domain Error');return;} res=Math.sqrt(v); break;
+            case '∛': res=Math.cbrt(v); break;
+            case 'ʸ√': S.pendingVal=v; S.pendingOp='ʸ√'; S.waitingOp=true; updateDisplay(); return;
+            case 'ln': if(v<=0){showError('Domain Error');return;} res=Math.log(v); break;
+            case 'log': if(v<=0){showError('Domain Error');return;} res=Math.log10(v); break;
+            case '1/x': if(v===0){showError('Cannot ÷ 0');return;} res=1/v; break;
+            case '|x|': res=Math.abs(v); break;
+            case 'n!': if(v<0||v!==Math.floor(v)){showError('Domain Error');return;} res=factorial(v); break;
+            case 'π': S.current=String(Math.PI); S.justCalc=true; updateDisplay(); return;
+            case 'e': S.current=String(Math.E); S.justCalc=true; updateDisplay(); return;
+            case 'Rand': res=Math.random(); break;
+            case 'EE': S.current+='e'; updateDisplay(); return;
+            case '(': case ')': return;
+            default: return;
         }
-        return str;
-    }
-
-    function setDisplay(val) {
-        state.currentInput = String(val);
+        if (res === undefined) return;
+        const rs = fmtResult(res);
+        addHistory(`${fn}(${v})`, rs);
+        S.calcCount++;
+        localStorage.setItem('calcCount', S.calcCount);
+        S.current = rs;
+        S.justCalc = true;
+        S.waitingOp = false;
         updateDisplay();
+    } catch(err) { showError('Error'); }
+}
+
+function factorial(n) {
+    if (n>170) return Infinity;
+    if (n<=1) return 1;
+    let r=1; for(let i=2;i<=n;i++) r*=i; return r;
+}
+
+// ================================================================
+// MEMORY
+// ================================================================
+function memAct(act, e) {
+    ripple(e);
+    const v = parseFloat(S.current);
+    switch(act) {
+        case 'MC': S.memory=0; S.hasMemory=false; break;
+        case 'MR': S.current=fmtResult(S.memory); S.justCalc=true; break;
+        case 'MS': S.memory=v; S.hasMemory=true; break;
+        case 'M+': S.memory+=v; S.hasMemory=true; break;
+        case 'M-': S.memory-=v; S.hasMemory=true; break;
+    }
+    updateDisplay();
+    showNotif(`Memory: ${fmtResult(S.memory)}`);
+}
+
+// ================================================================
+// HISTORY
+// ================================================================
+function addHistory(expr, result) {
+    S.history.unshift({ expr, result, time: new Date().toLocaleTimeString() });
+    if (S.history.length > 100) S.history.pop();
+    localStorage.setItem('calcHistory', JSON.stringify(S.history));
+    renderHistory();
+}
+
+function renderHistory() {
+    const html = S.history.length === 0
+        ? '<div style="text-align:center;color:var(--text-secondary);padding:20px;font-size:13px">No history yet</div>'
+        : S.history.map((h,i) => `
+            <div class="history-item" onclick="useHistory(${i})">
+                <div>
+                    <div class="h-expr">${h.expr}</div>
+                    <div class="h-result">= ${h.result}</div>
+                </div>
+                <div class="history-time">${h.time}</div>
+            </div>`).join('');
+
+    const el1 = document.getElementById('calcHistoryList');
+    const el2 = document.getElementById('sideHistoryList');
+    if (el1) el1.innerHTML = html;
+    if (el2) el2.innerHTML = html;
+}
+
+function useHistory(i) {
+    S.current = S.history[i].result;
+    S.justCalc = true;
+    updateDisplay();
+}
+
+function clearHistory() {
+    S.history = [];
+    localStorage.setItem('calcHistory', '[]');
+    renderHistory();
+    showNotif('History cleared');
+}
+
+// ================================================================
+// MODE
+// ================================================================
+function setMode(mode) {
+    S.mode = mode;
+    ['standard','scientific','history'].forEach(m => {
+        document.getElementById(`tab-${m}`).classList.toggle('active', m===mode);
+        document.getElementById(`buttons-${m}`).style.display = m===mode ? (m==='scientific'?'grid':m==='standard'?'grid':'block') : 'none';
+    });
+    if (mode === 'history') renderHistory();
+}
+
+// ================================================================
+// GRAPHING
+// ================================================================
+const COLORS = ['#4facfe','#f953c6','#43e97b','#fa8231','#a29bfe','#fd79a8'];
+
+function plotGraph() {
+    const input = document.getElementById('graphInput').value.trim();
+    if (!input) return;
+
+    const xMin = parseFloat(document.getElementById('xMin').value) || -10;
+    const xMax = parseFloat(document.getElementById('xMax').value) || 10;
+
+    if (S.graphFunctions.length >= 6) {
+        showNotif('Max 6 functions. Clear some first.', 'warn');
+        return;
     }
 
-    function showError(msg) {
-        state.currentInput = msg || 'Error';
-        state.waitingForOperand = true;
-        state.justCalculated = false;
-        updateDisplay();
+    const color = COLORS[S.graphFunctions.length % COLORS.length];
+    S.graphFunctions.push({ expr: input, color });
+    document.getElementById('graphInput').value = '';
+    S.graphCount++;
+    localStorage.setItem('graphCount', S.graphCount);
+    renderGraph(xMin, xMax);
+    renderGraphFnList();
+    updateStats();
+}
 
-        const display = document.getElementById('display');
-        display.classList.add('shake');
-        setTimeout(() => display.classList.remove('shake'), 400);
-    }
+function quickPlot(expr) {
+    document.getElementById('graphInput').value = expr;
+    plotGraph();
+}
 
-    // ============================================================
-    // NUMBER INPUT
-    // ============================================================
-    function appendNumber(digit) {
-        rippleButton(event);
+function parseExpr(expr, x) {
+    // Safe math expression parser
+    let e = expr
+        .replace(/\^/g, '**')
+        .replace(/sin\(/g, 'Math.sin(')
+        .replace(/cos\(/g, 'Math.cos(')
+        .replace(/tan\(/g, 'Math.tan(')
+        .replace(/sqrt\(/g, 'Math.sqrt(')
+        .replace(/log\(/g, 'Math.log10(')
+        .replace(/ln\(/g, 'Math.log(')
+        .replace(/abs\(/g, 'Math.abs(')
+        .replace(/pi/g, 'Math.PI')
+        .replace(/π/g, 'Math.PI')
+        .replace(/e(?![a-zA-Z])/g, 'Math.E');
+    try {
+        // eslint-disable-next-line no-new-func
+        return Function('x', `"use strict"; return (${e})`)(x);
+    } catch { return NaN; }
+}
 
-        if (state.waitingForOperand) {
-            state.currentInput = digit;
-            state.waitingForOperand = false;
-        } else if (state.justCalculated) {
-            state.currentInput = digit;
-            state.justCalculated = false;
-            state.pendingValue = null;
-            state.pendingOperator = null;
-        } else {
-            if (state.currentInput === '0' && digit !== '.') {
-                state.currentInput = digit;
-            } else {
-                if (state.currentInput.length < 16) {
-                    state.currentInput += digit;
-                }
-            }
+function renderGraph(xMin, xMax) {
+    const canvas = document.getElementById('graphCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const steps = 300;
+    const step = (xMax - xMin) / steps;
+    const labels = [];
+    const datasets = S.graphFunctions.map(fn => {
+        const data = [];
+        for (let i = 0; i <= steps; i++) {
+            const x = xMin + i * step;
+            if (i === 0) labels.push(x.toFixed(1));
+            const y = parseExpr(fn.expr, x);
+            data.push({ x, y: isFinite(y) ? y : null });
         }
-        updateDisplay();
-    }
-
-    function appendDecimal() {
-        rippleButton(event);
-
-        if (state.waitingForOperand || state.justCalculated) {
-            state.currentInput = '0.';
-            state.waitingForOperand = false;
-            state.justCalculated = false;
-        } else if (!state.currentInput.includes('.')) {
-            state.currentInput += '.';
-        }
-        updateDisplay();
-    }
-
-    // ============================================================
-    // OPERATORS
-    // ============================================================
-    function appendOperator(op) {
-        rippleButton(event);
-
-        const currentVal = parseFloat(state.currentInput);
-
-        if (state.pendingOperator && !state.waitingForOperand) {
-            // Chain calculation
-            const result = computeBasic(state.pendingValue, currentVal, state.pendingOperator);
-            if (result === null) return;
-            state.currentInput = formatResult(result);
-            state.pendingValue = parseFloat(state.currentInput);
-        } else {
-            state.pendingValue = currentVal;
-        }
-
-        state.pendingOperator = op;
-        state.waitingForOperand = true;
-        state.justCalculated = false;
-        updateDisplay();
-    }
-
-    function computeBasic(a, b, op) {
-        switch (op) {
-            case '+': return a + b;
-            case '−': return a - b;
-            case '×': return a * b;
-            case '÷':
-                if (b === 0) { showError('Cannot ÷ 0'); return null; }
-                return a / b;
-            case 'xⁿ': return Math.pow(a, b);
-            case 'ʸ√': 
-                if (a === 0) return 0;
-                return Math.pow(b, 1/a);
-        }
-        return b;
-    }
-
-    // ============================================================
-    // CALCULATE
-    // ============================================================
-    function calculate() {
-        rippleButton(event);
-
-        if (state.pendingOperator === null || state.waitingForOperand) {
-            // Nothing pending
-            if (state.pendingValue === null) return;
-        }
-
-        const currentVal = parseFloat(state.currentInput);
-        if (isNaN(currentVal)) return;
-
-        let result;
-        if (state.pendingOperator === 'xⁿ') {
-            result = Math.pow(state.pendingValue, currentVal);
-        } else if (state.pendingOperator === 'ʸ√') {
-            result = Math.pow(currentVal, 1 / state.pendingValue);
-        } else {
-            result = computeBasic(state.pendingValue, currentVal, state.pendingOperator);
-        }
-
-        if (result === null) return;
-
-        // Save to history
-        const exprStr = `${formatNumber(state.pendingValue)} ${state.pendingOperator} ${formatNumber(currentVal)}`;
-        const resultStr = formatResult(result);
-        addToHistory(exprStr, resultStr);
-
-        state.currentInput = resultStr;
-        state.pendingValue = null;
-        state.pendingOperator = null;
-        state.waitingForOperand = false;
-        state.justCalculated = true;
-        updateDisplay();
-    }
-
-    function formatResult(num) {
-        if (!isFinite(num) || isNaN(num)) {
-            return isNaN(num) ? 'NaN' : (num > 0 ? 'Infinity' : '-Infinity');
-        }
-        // Remove floating point artifacts
-        let result = parseFloat(num.toPrecision(12));
-        let str = String(result);
-        if (str.length > 15) {
-            str = num.toExponential(6);
-        }
-        return str;
-    }
-
-    // ============================================================
-    // CLEAR / BACKSPACE
-    // ============================================================
-    function clearAll() {
-        rippleButton(event);
-        state.currentInput = '0';
-        state.pendingValue = null;
-        state.pendingOperator = null;
-        state.waitingForOperand = false;
-        state.justCalculated = false;
-        state.pendingPowerOp = null;
-        updateDisplay();
-    }
-
-    function backspace() {
-        rippleButton(event);
-        if (state.justCalculated || state.waitingForOperand) {
-            state.currentInput = '0';
-            state.waitingForOperand = false;
-            state.justCalculated = false;
-        } else {
-            state.currentInput = state.currentInput.slice(0, -1) || '0';
-        }
-        updateDisplay();
-    }
-
-    // ============================================================
-    // SIGN / PERCENT
-    // ============================================================
-    function toggleSign() {
-        rippleButton(event);
-        const val = parseFloat(state.currentInput);
-        if (!isNaN(val)) {
-            state.currentInput = formatResult(-val);
-            updateDisplay();
-        }
-    }
-
-    function percentage() {
-        rippleButton(event);
-        const val = parseFloat(state.currentInput);
-        if (!isNaN(val)) {
-            state.currentInput = formatResult(val / 100);
-            updateDisplay();
-        }
-    }
-
-    // ============================================================
-    // SCIENTIFIC FUNCTIONS
-    // ============================================================
-    function toRadians(deg) {
-        return deg * (Math.PI / 180);
-    }
-
-    function toDegrees(rad) {
-        return rad * (180 / Math.PI);
-    }
-
-    function getAngleVal(val) {
-        return state.angleMode === 'DEG' ? toRadians(val) : val;
-    }
-
-    function sciFunction(fn) {
-        rippleButton(event);
-        const val = parseFloat(state.currentInput);
-
-        // Handle 2nd function toggle
-        if (fn === '2nd') {
-            state.is2nd = !state.is2nd;
-            document.getElementById('btn2nd').style.background = state.is2nd
-                ? 'rgba(100,200,255,0.3)' : '';
-            updateTrigLabels();
-            return;
-        }
-
-        // Handle trig with possible 2nd (inverse)
-        if (fn === 'sin' || fn === 'cos' || fn === 'tan') {
-            if (state.is2nd) {
-                fn = 'a' + fn;
-            }
-        }
-
-        let result;
-        try {
-            switch (fn) {
-                case 'sin':
-                    result = Math.sin(getAngleVal(val)); break;
-                case 'cos':
-                    result = Math.cos(getAngleVal(val)); break;
-                case 'tan':
-                    if (state.angleMode === 'DEG' && val % 180 === 90) {
-                        showError('Undefined'); return;
-                    }
-                    result = Math.tan(getAngleVal(val)); break;
-                case 'asin':
-                    if (val < -1 || val > 1) { showError('Domain Error'); return; }
-                    result = state.angleMode === 'DEG' ? toDegrees(Math.asin(val)) : Math.asin(val); break;
-                case 'acos':
-                    if (val < -1 || val > 1) { showError('Domain Error'); return; }
-                    result = state.angleMode === 'DEG' ? toDegrees(Math.acos(val)) : Math.acos(val); break;
-                case 'atan':
-                    result = state.angleMode === 'DEG' ? toDegrees(Math.atan(val)) : Math.atan(val); break;
-                case 'x²':
-                    result = val * val; break;
-                case 'x³':
-                    result = val * val * val; break;
-                case 'xⁿ':
-                    // Set up for second operand
-                    state.pendingValue = val;
-                    state.pendingOperator = 'xⁿ';
-                    state.waitingForOperand = true;
-                    updateDisplay();
-                    return;
-                case 'eˣ':
-                    result = Math.exp(val); break;
-                case '10ˣ':
-                    result = Math.pow(10, val); break;
-                case '√':
-                    if (val < 0) { showError('Domain Error'); return; }
-                    result = Math.sqrt(val); break;
-                case '∛':
-                    result = Math.cbrt(val); break;
-                case 'ʸ√':
-                    state.pendingValue = val;
-                    state.pendingOperator = 'ʸ√';
-                    state.waitingForOperand = true;
-                    updateDisplay();
-                    return;
-                case 'ln':
-                    if (val <= 0) { showError('Domain Error'); return; }
-                    result = Math.log(val); break;
-                case 'log':
-                    if (val <= 0) { showError('Domain Error'); return; }
-                    result = Math.log10(val); break;
-                case '(':
-                    handleParenthesis('('); return;
-                case ')':
-                    handleParenthesis(')'); return;
-                case '1/x':
-                    if (val === 0) { showError('Cannot ÷ 0'); return; }
-                    result = 1 / val; break;
-                case '|x|':
-                    result = Math.abs(val); break;
-                case 'n!':
-                    if (val < 0 || val !== Math.floor(val)) { showError('Domain Error'); return; }
-                    if (val > 170) { result = Infinity; break; }
-                    result = factorial(val); break;
-                case 'π':
-                    result = Math.PI;
-                    state.waitingForOperand = false;
-                    state.currentInput = String(result);
-                    updateDisplay();
-                    return;
-                case 'e':
-                    result = Math.E;
-                    state.waitingForOperand = false;
-                    state.currentInput = String(result);
-                    updateDisplay();
-                    return;
-                case 'Rand':
-                    result = Math.random(); break;
-                case 'EE':
-                    state.currentInput += 'e';
-                    updateDisplay();
-                    return;
-                case 'log₂':
-                    if (val <= 0) { showError('Domain Error'); return; }
-                    result = Math.log2(val); break;
-                default:
-                    return;
-            }
-
-            if (result === undefined || result === null) return;
-
-            const exprStr = `${fn}(${val})`;
-            const resultStr = formatResult(result);
-            addToHistory(exprStr, resultStr);
-
-            state.currentInput = resultStr;
-            state.justCalculated = true;
-            state.waitingForOperand = false;
-            updateDisplay();
-
-        } catch (e) {
-            showError('Error');
-        }
-    }
-
-    // Simple parenthesis handling (expression stack)
-    let parenStack = [];
-    let parenExpr = '';
-
-    function handleParenthesis(paren) {
-        if (paren === '(') {
-            parenStack.push({ val: state.pendingValue, op: state.pendingOperator });
-            state.pendingValue = null;
-            state.pendingOperator = null;
-            state.currentInput = '0';
-            state.waitingForOperand = false;
-            document.getElementById('displayExpression').textContent += ' (';
-        } else {
-            if (parenStack.length > 0) {
-                const inner = parseFloat(state.currentInput);
-                const frame = parenStack.pop();
-                if (frame.op && frame.val !== null) {
-                    const result = computeBasic(frame.val, inner, frame.op);
-                    if (result !== null) {
-                        state.currentInput = formatResult(result);
-                    }
-                }
-                state.pendingValue = frame.val;
-                state.pendingOperator = frame.op;
-                state.justCalculated = true;
-                updateDisplay();
-            }
-        }
-    }
-
-    function factorial(n) {
-        if (n === 0 || n === 1) return 1;
-        let result = 1;
-        for (let i = 2; i <= n; i++) result *= i;
-        return result;
-    }
-
-    function updateTrigLabels() {
-        const sinBtn = document.getElementById('btnSin');
-        const cosBtn = document.getElementById('btnCos');
-        const tanBtn = document.getElementById('btnTan');
-        if (state.is2nd) {
-            sinBtn.textContent = 'sin⁻¹';
-            cosBtn.textContent = 'cos⁻¹';
-            tanBtn.textContent = 'tan⁻¹';
-        } else {
-            sinBtn.textContent = 'sin';
-            cosBtn.textContent = 'cos';
-            tanBtn.textContent = 'tan';
-        }
-    }
-
-    // ============================================================
-    // ANGLE TOGGLE
-    // ============================================================
-    function toggleAngle() {
-        state.angleMode = state.angleMode === 'DEG' ? 'RAD' : 'DEG';
-        updateDisplay();
-    }
-
-    // ============================================================
-    // MEMORY
-    // ============================================================
-    function memoryAction(action) {
-        rippleButton(event);
-        const val = parseFloat(state.currentInput);
-
-        switch (action) {
-            case 'MC':
-                state.memory = 0;
-                state.hasMemory = false;
-                break;
-            case 'MR':
-                state.currentInput = formatResult(state.memory);
-                state.waitingForOperand = false;
-                state.justCalculated = true;
-                break;
-            case 'MS':
-                state.memory = val;
-                state.hasMemory = true;
-                break;
-            case 'M+':
-                state.memory += val;
-                state.hasMemory = true;
-                break;
-            case 'M-':
-                state.memory -= val;
-                state.hasMemory = true;
-                break;
-        }
-        updateDisplay();
-    }
-
-    // ============================================================
-    // HISTORY
-    // ============================================================
-    function addToHistory(expr, result) {
-        state.history.unshift({ expr, result, time: new Date().toLocaleTimeString() });
-        if (state.history.length > 50) state.history.pop();
-        renderHistory();
-    }
-
-    function renderHistory() {
-        const list = document.getElementById('historyList');
-        if (state.history.length === 0) {
-            list.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:13px;text-align:center;padding:20px;">No history yet</div>';
-            return;
-        }
-        list.innerHTML = state.history.map((item, i) => `
-            <div class="history-item" onclick="useHistoryItem(${i})">
-                <div class="expr">${item.expr} = </div>
-                <div class="result">${item.result}</div>
-            </div>
-        `).join('');
-    }
-
-    function useHistoryItem(i) {
-        const item = state.history[i];
-        state.currentInput = item.result;
-        state.justCalculated = true;
-        state.waitingForOperand = false;
-        updateDisplay();
-    }
-
-    function clearHistory() {
-        state.history = [];
-        renderHistory();
-    }
-
-    function toggleHistory() {
-        const panel = document.getElementById('historyPanel');
-        panel.classList.toggle('open');
-        renderHistory();
-    }
-
-    // ============================================================
-    // MODE
-    // ============================================================
-    function setMode(mode) {
-        state.mode = mode;
-        const stdBtns = document.getElementById('standardButtons');
-        const sciBtns = document.getElementById('scientificButtons');
-        document.getElementById('btnStandard').classList.toggle('active', mode === 'standard');
-        document.getElementById('btnScientific').classList.toggle('active', mode === 'scientific');
-
-        if (mode === 'standard') {
-            stdBtns.style.display = 'grid';
-            sciBtns.style.display = 'none';
-        } else {
-            stdBtns.style.display = 'none';
-            sciBtns.style.display = 'grid';
-        }
-    }
-
-    // ============================================================
-    // RIPPLE EFFECT
-    // ============================================================
-    function rippleButton(e) {
-        if (!e || !e.currentTarget) return;
-        const btn = e.currentTarget;
-        const rect = btn.getBoundingClientRect();
-        const ripple = document.createElement('span');
-        ripple.classList.add('ripple');
-        const size = Math.max(rect.width, rect.height);
-        const x = (e.clientX || rect.left + rect.width/2) - rect.left - size/2;
-        const y = (e.clientY || rect.top + rect.height/2) - rect.top - size/2;
-        ripple.style.width = ripple.style.height = `${size}px`;
-        ripple.style.left = `${x}px`;
-        ripple.style.top = `${y}px`;
-        btn.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 500);
-    }
-
-    // ============================================================
-    // KEYBOARD SUPPORT
-    // ============================================================
-    document.addEventListener('keydown', function(e) {
-        const key = e.key;
-
-        if (e.ctrlKey || e.metaKey) return;
-
-        if (key >= '0' && key <= '9') appendNumber(key);
-        else if (key === '.') appendDecimal();
-        else if (key === '+') appendOperator('+');
-        else if (key === '-') appendOperator('−');
-        else if (key === '*') appendOperator('×');
-        else if (key === '/') { e.preventDefault(); appendOperator('÷'); }
-        else if (key === 'Enter' || key === '=') calculate();
-        else if (key === 'Backspace') backspace();
-        else if (key === 'Escape') clearAll();
-        else if (key === '%') percentage();
-        else if (key === 's') sciFunction('sin');
-        else if (key === 'c') sciFunction('cos');
-        else if (key === 't') sciFunction('tan');
-        else if (key === 'l') sciFunction('log');
-        else if (key === 'n') sciFunction('ln');
-        else if (key === 'r') sciFunction('√');
-        else if (key === 'p') sciFunction('π');
-        else if (key === '!') sciFunction('n!');
-        else if (key === '(') sciFunction('(');
-        else if (key === ')') sciFunction(')');
+        return {
+            label: `y = ${fn.expr}`,
+            data,
+            borderColor: fn.color,
+            backgroundColor: fn.color + '22',
+            borderWidth: 2,
+            pointRadius: 0,
+            tension: 0.2,
+            spanGaps: false
+        };
     });
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    updateDisplay();
+    if (S.chartInstance) S.chartInstance.destroy();
+
+    S.chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 400 },
+            scales: {
+                x: {
+                    type: 'linear',
+                    min: xMin,
+                    max: xMax,
+                    grid: { color: 'rgba(255,255,255,0.08)' },
+                    ticks: { color: 'rgba(255,255,255,0.5)', maxTicksLimit: 8 }
+                },
+                y: {
+                    grid: { color: 'rgba(255,255,255,0.08)' },
+                    ticks: { color: 'rgba(255,255,255,0.5)', maxTicksLimit: 8 }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(20,20,50,0.9)',
+                    titleColor: 'rgba(255,255,255,0.8)',
+                    bodyColor: 'rgba(255,255,255,0.6)'
+                }
+            }
+        }
+    });
+}
+
+function renderGraphFnList() {
+    const list = document.getElementById('graphFnList');
+    list.innerHTML = S.graphFunctions.map((fn, i) => `
+        <div class="graph-fn-item">
+            <div class="fn-color-dot" style="background:${fn.color}"></div>
+            <div class="fn-label">y = ${fn.expr}</div>
+            <button class="fn-remove" onclick="removeGraphFn(${i})">✕</button>
+        </div>`).join('');
+}
+
+function removeGraphFn(i) {
+    S.graphFunctions.splice(i, 1);
+    const xMin = parseFloat(document.getElementById('xMin').value) || -10;
+    const xMax = parseFloat(document.getElementById('xMax').value) || 10;
+    if (S.graphFunctions.length > 0) renderGraph(xMin, xMax);
+    else if (S.chartInstance) { S.chartInstance.destroy(); S.chartInstance = null; }
+    renderGraphFnList();
+}
+
+function clearGraph() {
+    S.graphFunctions = [];
+    if (S.chartInstance) { S.chartInstance.destroy(); S.chartInstance = null; }
+    renderGraphFnList();
+    showNotif('Graph cleared');
+}
+
+// ================================================================
+// UNIT CONVERTER
+// ================================================================
+const CONVERTERS = {
+    length: {
+        units: ['Meter','Kilometer','Centimeter','Millimeter','Mile','Yard','Foot','Inch','Nautical Mile'],
+        base: { Meter:1, Kilometer:0.001, Centimeter:100, Millimeter:1000, Mile:0.000621371, Yard:1.09361, Foot:3.28084, Inch:39.3701, 'Nautical Mile':0.000539957 }
+    },
+    weight: {
+        units: ['Kilogram','Gram','Milligram','Pound','Ounce','Ton','Stone'],
+        base: { Kilogram:1, Gram:1000, Milligram:1e6, Pound:2.20462, Ounce:35.274, Ton:0.001, Stone:0.157473 }
+    },
+    temp: {
+        units: ['Celsius','Fahrenheit','Kelvin'],
+        base: null // handled specially
+    },
+    area: {
+        units: ['Square Meter','Square Kilometer','Square Mile','Acre','Hectare','Square Foot','Square Inch'],
+        base: { 'Square Meter':1, 'Square Kilometer':1e-6, 'Square Mile':3.861e-7, Acre:0.000247105, Hectare:0.0001, 'Square Foot':10.7639, 'Square Inch':1550.0031 }
+    },
+    speed: {
+        units: ['m/s','km/h','mph','Knot','ft/s'],
+        base: { 'm/s':1, 'km/h':3.6, 'mph':2.23694, 'Knot':1.94384, 'ft/s':3.28084 }
+    },
+    data: {
+        units: ['Byte','Kilobyte','Megabyte','Gigabyte','Terabyte','Bit'],
+        base: { Byte:1, Kilobyte:1/1024, Megabyte:1/1048576, Gigabyte:1/1073741824, Terabyte:1/1099511627776, Bit:8 }
+    }
+};
+
+function setConverter(type, btn) {
+    S.converterType = type;
+    document.querySelectorAll('.converter-tab').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    populateConverterSelects();
+    doConvert();
+}
+
+function populateConverterSelects() {
+    const conv = CONVERTERS[S.converterType];
+    const from = document.getElementById('convFrom');
+    const to = document.getElementById('convTo');
+    const opts = conv.units.map(u => `<option value="${u}">${u}</option>`).join('');
+    from.innerHTML = opts;
+    to.innerHTML = opts;
+    if (conv.units.length > 1) to.selectedIndex = 1;
+}
+
+function doConvert() {
+    const val = parseFloat(document.getElementById('convInput').value);
+    const from = document.getElementById('convFrom').value;
+    const to = document.getElementById('convTo').value;
+    if (isNaN(val)) { document.getElementById('convResult').textContent = '—'; return; }
+
+    let result;
+    if (S.converterType === 'temp') {
+        result = convertTemp(val, from, to);
+    } else {
+        const base = CONVERTERS[S.converterType].base;
+        const inBase = val / base[from];
+        result = inBase * base[to];
+    }
+
+    const fmt = Math.abs(result) < 0.001 || Math.abs(result) > 1e9
+        ? result.toExponential(4)
+        : parseFloat(result.toPrecision(8)).toString();
+
+    document.getElementById('convResult').textContent = fmt;
+    document.getElementById('convExpr').textContent = `${val} ${from} =`;
+}
+
+function convertTemp(val, from, to) {
+    let celsius;
+    if (from === 'Celsius') celsius = val;
+    else if (from === 'Fahrenheit') celsius = (val-32)*5/9;
+    else celsius = val - 273.15;
+
+    if (to === 'Celsius') return celsius;
+    if (to === 'Fahrenheit') return celsius*9/5+32;
+    return celsius + 273.15;
+}
+
+function copyConvResult() {
+    const v = document.getElementById('convResult').textContent;
+    navigator.clipboard.writeText(v).then(() => showNotif('Copied: ' + v));
+}
+
+// ================================================================
+// THEMES
+// ================================================================
+function applyTheme(theme) {
+    S.theme = theme;
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('calcTheme', theme);
+
+    document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
+    const card = document.getElementById(`theme-${theme}`);
+    if (card) card.classList.add('active');
+
+    showNotif(`Theme: ${theme.charAt(0).toUpperCase()+theme.slice(1)}`);
+}
+
+// ================================================================
+// STATS
+// ================================================================
+let sessionTimer;
+function updateStats() {
+    document.getElementById('statCalcs').textContent = S.calcCount;
+    document.getElementById('statGraphs').textContent = S.graphCount;
+    const elapsed = Math.floor((Date.now() - S.sessionStart) / 1000);
+    const m = Math.floor(elapsed/60).toString().padStart(2,'0');
+    const s = (elapsed%60).toString().padStart(2,'0');
+    document.getElementById('statSession').textContent = `${m}:${s}`;
+}
+
+// ================================================================
+// PWA / INSTALL
+// ================================================================
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    S.deferredPrompt = e;
+    document.getElementById('installBtn').style.display = 'flex';
+    setTimeout(() => {
+        document.getElementById('installPrompt').classList.add('visible');
+    }, 5000);
+});
+
+function installApp() {
+    if (S.deferredPrompt) {
+        S.deferredPrompt.prompt();
+        S.deferredPrompt.userChoice.then(r => {
+            if (r.outcome === 'accepted') showNotif('ProCalc installed successfully! 🎉');
+            S.deferredPrompt = null;
+        });
+    } else {
+        showNotif('To install: tap Share → Add to Home Screen (iOS) or use Chrome menu (Android)');
+    }
+    dismissInstall();
+}
+
+function dismissInstall() {
+    document.getElementById('installPrompt').classList.remove('visible');
+}
+
+// PWA Manifest
+function setupPWA() {
+    const manifest = {
+        name: 'ProCalc - Scientific Calculator',
+        short_name: 'ProCalc',
+        description: 'Professional Scientific Calculator with Graphing',
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#0f0c29',
+        theme_color: '#302b63',
+        icons: [
+            { src: 'https://via.placeholder.com/192x192/302b63/ffffff?text=PC', sizes: '192x192', type: 'image/png' },
+            { src: 'https://via.placeholder.com/512x512/302b63/ffffff?text=PC', sizes: '512x512', type: 'image/png' }
+        ]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    document.getElementById('manifestLink').setAttribute('href', url);
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+        const swCode = `
+            const CACHE = 'procalc-v1';
+            const ASSETS = ['/'];
+            self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))));
+            self.addEventListener('fetch', e => e.respondWith(
+                caches.match(e.request).then(r => r || fetch(e.request)).catch(() => caches.match('/'))
+            ));
+        `;
+        const swBlob = new Blob([swCode], {type:'application/javascript'});
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl).catch(() => {});
+    }
+}
+
+// ================================================================
+// MONETIZATION
+// ================================================================
+function selectPlan(plan) {
+    S.selectedPlan = plan;
+    document.querySelectorAll('.pricing-card').forEach((c,i) => {
+        c.style.borderColor = (i===0&&plan==='monthly')||(i===1&&plan==='yearly')
+            ? 'var(--accent)' : 'var(--border-color)';
+    });
+}
+
+function purchase() {
+    // In production: integrate Stripe, PayPal, or App Store billing
+    showNotif(`Redirecting to payment for ${S.selectedPlan} plan...`);
+    setTimeout(() => {
+        closeModal('proModal');
+        showNotif('Payment system would launch here. Integrate Stripe or PayPal for real payments.');
+    }, 1500);
+}
+
+function shareApp() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'ProCalc - Scientific Calculator',
+            text: 'Check out this amazing scientific calculator!',
+            url: window.location.href
+        }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(window.location.href)
+            .then(() => showNotif('Link copied to clipboard!'));
+    }
+}
+
+// ================================================================
+// MODAL
+// ================================================================
+function openModal(id) {
+    document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+    el.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+    });
+});
+
+// ================================================================
+// NOTIFICATIONS
+// ================================================================
+function showNotif(msg, type) {
+    const notif = document.createElement('div');
+    notif.className = 'notification';
+    notif.textContent = msg;
+    if (type === 'warn') notif.style.borderColor = 'var(--btn-clear-color)';
+    document.body.appendChild(notif);
+    setTimeout(() => {
+        notif.style.animation = 'none';
+        notif.style.opacity = '0';
+        notif.style.transition = 'opacity 0.3s';
+        setTimeout(() => notif.remove(), 300);
+    }, 2500);
+}
+
+// ================================================================
+// RIPPLE
+// ================================================================
+function ripple(e) {
+    if (!e) return;
+    const btn = e.currentTarget || e.target;
+    if (!btn || !btn.getBoundingClientRect) return;
+    const rect = btn.getBoundingClientRect();
+    const r = document.createElement('span');
+    r.className = 'ripple';
+    const size = Math.max(rect.width, rect.height);
+    const x = (e.clientX||rect.left+rect.width/2) - rect.left - size/2;
+    const y = (e.clientY||rect.top+rect.height/2) - rect.top - size/2;
+    r.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
+    btn.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+}
+
+// ================================================================
+// KEYBOARD
+// ================================================================
+document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey) return;
+    const k = e.key;
+    if (k >= '0' && k <= '9') appendNum(k, {});
+    else if (k === '.') appendDec({});
+    else if (k === '+') appendOp('+', {});
+    else if (k === '-') appendOp('−', {});
+    else if (k === '*') appendOp('×', {});
+    else if (k === '/') { e.preventDefault(); appendOp('÷', {}); }
+    else if (k === 'Enter' || k === '=') calculate({});
+    else if (k === 'Backspace') backspace({});
+    else if (k === 'Escape') clearAll({});
+    else if (k === '%') percentage({});
+    else if (k === 's') sciFn('sin', {});
+    else if (k === 'c') sciFn('cos', {});
+    else if (k === 't') sciFn('tan', {});
+    else if (k === 'l') sciFn('log', {});
+    else if (k === 'n') sciFn('ln', {});
+    else if (k === 'r') sciFn('√', {});
+    else if (k === 'p') sciFn('π', {});
+});
+
+// ================================================================
+// INIT
+// ================================================================
+function init() {
+    // Apply saved theme
+    applyTheme(S.theme);
+
+    // Populate converter
+    populateConverterSelects();
+    doConvert();
+
+    // Render history
     renderHistory();
+
+    // Update display
+    updateDisplay();
+
+    // Setup PWA
+    setupPWA();
+
+    // Session timer
+    sessionTimer = setInterval(updateStats, 1000);
+
+    // Initial graph
+    setTimeout(() => {
+        quickPlot('sin(x)');
+        quickPlot('cos(x)');
+    }, 500);
+
+    // Update stats
+    document.getElementById('statCalcs').textContent = S.calcCount;
+    document.getElementById('statGraphs').textContent = S.graphCount;
+}
+
+init();
 </script>
 </body>
 </html>
