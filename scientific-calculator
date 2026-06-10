@@ -2,2320 +2,634 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>ProCalc - Scientific Calculator</title>
-    
-    <!-- PWA Meta Tags -->
-    <meta name="description" content="Professional Scientific Calculator with Graphing, Themes, and More">
-    <meta name="theme-color" content="#302b63">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="ProCalc">
-    <link rel="manifest" href="#" id="manifestLink">
-    
-    <!-- Graph Library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- AdSense Placeholder -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>SciCalc | Scientific Calculator</title>
     <style>
-        /* ============================================================
-           CSS VARIABLES & THEMES
-        ============================================================ */
-        :root {
-            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            --calc-bg: rgba(255,255,255,0.05);
-            --display-bg: rgba(0,0,0,0.3);
-            --btn-number-bg: rgba(255,255,255,0.08);
-            --btn-number-color: #ffffff;
-            --btn-operator-bg: rgba(100,160,255,0.15);
-            --btn-operator-color: #7eb8ff;
-            --btn-function-bg: rgba(255,255,255,0.05);
-            --btn-function-color: rgba(200,200,255,0.9);
-            --btn-equals-bg: linear-gradient(135deg, #4facfe, #00f2fe);
-            --btn-clear-bg: rgba(255,80,80,0.15);
-            --btn-clear-color: #ff7070;
-            --btn-special-bg: rgba(255,200,100,0.1);
-            --btn-special-color: rgba(255,200,150,0.9);
-            --btn-memory-bg: rgba(100,255,200,0.1);
-            --btn-memory-color: rgba(100,255,200,0.9);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255,255,255,0.5);
-            --border-color: rgba(255,255,255,0.1);
-            --accent: #4facfe;
-            --shadow: 0 25px 50px rgba(0,0,0,0.5);
+        * {
+            box-sizing: border-box;
+            user-select: none; /* avoid accidental text selection on double-tap */
         }
-
-        /* LIGHT THEME */
-        [data-theme="light"] {
-            --bg-gradient: linear-gradient(135deg, #e8ecf4, #d5dde8, #c8d4e0);
-            --calc-bg: rgba(255,255,255,0.9);
-            --display-bg: rgba(240,244,255,0.95);
-            --btn-number-bg: rgba(255,255,255,0.9);
-            --btn-number-color: #2c3e50;
-            --btn-operator-bg: rgba(52,152,219,0.15);
-            --btn-operator-color: #2980b9;
-            --btn-function-bg: rgba(200,210,230,0.6);
-            --btn-function-color: #34495e;
-            --btn-equals-bg: linear-gradient(135deg, #3498db, #2980b9);
-            --btn-clear-bg: rgba(231,76,60,0.15);
-            --btn-clear-color: #e74c3c;
-            --btn-special-bg: rgba(241,196,15,0.15);
-            --btn-special-color: #d4a017;
-            --btn-memory-bg: rgba(46,204,113,0.15);
-            --btn-memory-color: #27ae60;
-            --text-primary: #2c3e50;
-            --text-secondary: rgba(44,62,80,0.6);
-            --border-color: rgba(0,0,0,0.08);
-            --accent: #3498db;
-            --shadow: 0 25px 50px rgba(0,0,0,0.15);
-        }
-
-        /* NEON THEME */
-        [data-theme="neon"] {
-            --bg-gradient: linear-gradient(135deg, #000000, #0a0a0a, #050505);
-            --calc-bg: rgba(0,255,100,0.03);
-            --display-bg: rgba(0,0,0,0.8);
-            --btn-number-bg: rgba(0,255,100,0.05);
-            --btn-number-color: #00ff64;
-            --btn-operator-bg: rgba(0,200,255,0.1);
-            --btn-operator-color: #00c8ff;
-            --btn-function-bg: rgba(255,0,200,0.05);
-            --btn-function-color: #ff00c8;
-            --btn-equals-bg: linear-gradient(135deg, #00ff64, #00c8ff);
-            --btn-clear-bg: rgba(255,50,50,0.1);
-            --btn-clear-color: #ff3232;
-            --btn-special-bg: rgba(255,200,0,0.05);
-            --btn-special-color: #ffc800;
-            --btn-memory-bg: rgba(200,0,255,0.1);
-            --btn-memory-color: #c800ff;
-            --text-primary: #00ff64;
-            --text-secondary: rgba(0,255,100,0.5);
-            --border-color: rgba(0,255,100,0.15);
-            --accent: #00ff64;
-            --shadow: 0 0 50px rgba(0,255,100,0.2);
-        }
-
-        /* SUNSET THEME */
-        [data-theme="sunset"] {
-            --bg-gradient: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-            --calc-bg: rgba(255,100,50,0.05);
-            --display-bg: rgba(0,0,0,0.4);
-            --btn-number-bg: rgba(255,150,100,0.1);
-            --btn-number-color: #ffb899;
-            --btn-operator-bg: rgba(255,100,50,0.15);
-            --btn-operator-color: #ff9966;
-            --btn-function-bg: rgba(255,50,100,0.08);
-            --btn-function-color: rgba(255,180,150,0.9);
-            --btn-equals-bg: linear-gradient(135deg, #f953c6, #b91d73);
-            --btn-clear-bg: rgba(255,50,50,0.15);
-            --btn-clear-color: #ff6b6b;
-            --btn-special-bg: rgba(255,200,50,0.1);
-            --btn-special-color: rgba(255,220,150,0.9);
-            --btn-memory-bg: rgba(100,200,255,0.1);
-            --btn-memory-color: rgba(150,220,255,0.9);
-            --text-primary: #ffe0d0;
-            --text-secondary: rgba(255,200,150,0.6);
-            --border-color: rgba(255,100,50,0.15);
-            --accent: #f953c6;
-            --shadow: 0 25px 50px rgba(0,0,0,0.6);
-        }
-
-        /* OCEAN THEME */
-        [data-theme="ocean"] {
-            --bg-gradient: linear-gradient(135deg, #000428, #004e92, #000428);
-            --calc-bg: rgba(0,150,255,0.05);
-            --display-bg: rgba(0,30,80,0.6);
-            --btn-number-bg: rgba(0,150,255,0.1);
-            --btn-number-color: #a0d8ff;
-            --btn-operator-bg: rgba(0,200,200,0.15);
-            --btn-operator-color: #00e5e5;
-            --btn-function-bg: rgba(0,100,200,0.1);
-            --btn-function-color: rgba(150,220,255,0.9);
-            --btn-equals-bg: linear-gradient(135deg, #00c6ff, #0072ff);
-            --btn-clear-bg: rgba(255,80,120,0.15);
-            --btn-clear-color: #ff6090;
-            --btn-special-bg: rgba(100,200,255,0.1);
-            --btn-special-color: rgba(150,230,255,0.9);
-            --btn-memory-bg: rgba(0,255,200,0.1);
-            --btn-memory-color: rgba(100,255,200,0.9);
-            --text-primary: #d0f0ff;
-            --text-secondary: rgba(150,220,255,0.6);
-            --border-color: rgba(0,150,255,0.2);
-            --accent: #00c6ff;
-            --shadow: 0 25px 50px rgba(0,0,0,0.7);
-        }
-
-        /* ============================================================
-           BASE STYLES
-        ============================================================ */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
+            background: linear-gradient(145deg, #1e2a3a 0%, #0f1724 100%);
             min-height: 100vh;
-            background: var(--bg-gradient);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text-primary);
-            transition: all 0.4s ease;
-            overflow-x: hidden;
-        }
-
-        /* ============================================================
-           APP LAYOUT
-        ============================================================ */
-        .app-container {
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            min-height: 100vh;
-        }
-
-        /* TOP NAV */
-        .top-nav {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 20px;
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .app-logo {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .app-logo .logo-icon {
-            font-size: 24px;
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .nav-btn {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .nav-btn:hover {
-            background: rgba(255,255,255,0.15);
-        }
-
-        /* MAIN CONTENT */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        /* AD BANNER */
-        .ad-banner {
-            width: 100%;
-            max-width: 728px;
-            background: rgba(255,255,255,0.05);
-            border: 1px dashed rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-secondary);
-            min-height: 90px;
-            display: flex;
-            align-items: center;
             justify-content: center;
-        }
-
-        .ad-inner {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 4px;
+            font-family: 'Segoe UI', 'Roboto', 'Inter', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 16px;
         }
 
-        .ad-label {
-            font-size: 10px;
-            opacity: 0.5;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* CALCULATOR AREA */
-        .calc-area {
-            display: flex;
-            gap: 20px;
-            width: 100%;
-            max-width: 1100px;
-            align-items: flex-start;
-            justify-content: center;
-        }
-
-        /* CALCULATOR */
-        .calculator-wrapper {
-            width: 100%;
-            max-width: 440px;
-            flex-shrink: 0;
-        }
-
+        /* main card / calculator container */
         .calculator {
-            background: var(--calc-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            transition: all 0.4s ease;
+            max-width: 550px;
+            width: 100%;
+            background: rgba(22, 28, 38, 0.85);
+            backdrop-filter: blur(2px);
+            border-radius: 48px;
+            padding: 20px 20px 28px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.1);
+            transition: all 0.2s ease;
         }
 
-        /* DISPLAY */
+        /* display area */
         .display {
-            padding: 24px 20px 16px;
-            background: var(--display-bg);
-            min-height: 160px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            position: relative;
-            transition: all 0.3s;
-        }
-
-        .display-history {
-            font-size: 13px;
-            color: var(--text-secondary);
-            text-align: right;
-            min-height: 18px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .display-expression {
-            font-size: 16px;
-            color: var(--text-secondary);
-            text-align: right;
-            min-height: 26px;
-            margin-bottom: 6px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .display-main {
-            font-size: 48px;
-            color: var(--text-primary);
-            text-align: right;
-            font-weight: 300;
-            line-height: 1;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            transition: font-size 0.2s ease, color 0.3s;
-        }
-
-        .display-main.small { font-size: 32px; }
-        .display-main.xsmall { font-size: 22px; }
-
-        .display-badges {
-            position: absolute;
-            top: 12px;
-            left: 16px;
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .badge {
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .badge-mem {
-            background: rgba(100,200,255,0.2);
-            color: rgba(100,200,255,0.9);
-            display: none;
-        }
-
-        .badge-mem.active { display: block; }
-
-        .badge-angle {
-            background: rgba(255,200,100,0.2);
-            color: rgba(255,200,100,0.9);
-        }
-
-        .badge-pro {
-            background: linear-gradient(135deg, var(--accent), transparent);
-            color: var(--text-primary);
-        }
-
-        /* MODE TOGGLE */
-        .mode-bar {
-            display: flex;
-            padding: 10px 12px 6px;
-            gap: 6px;
-            background: rgba(0,0,0,0.15);
-            overflow-x: auto;
-        }
-
-        .mode-bar::-webkit-scrollbar { display: none; }
-
-        .mode-tab {
-            flex-shrink: 0;
-            padding: 6px 14px;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-
-        .mode-tab.active {
-            background: rgba(100,180,255,0.15);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* BUTTONS */
-        .buttons {
-            padding: 10px;
-            display: grid;
-            gap: 7px;
-        }
-
-        .buttons.standard-grid { grid-template-columns: repeat(4, 1fr); }
-        .buttons.scientific-grid { grid-template-columns: repeat(5, 1fr); }
-
-        .btn {
-            height: 56px;
-            border: none;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            border: 1px solid transparent;
-            flex-direction: column;
-        }
-
-        .btn:active { transform: scale(0.94); }
-
-        .btn-number {
-            background: var(--btn-number-bg);
-            color: var(--btn-number-color);
-            border-color: var(--border-color);
-        }
-
-        .btn-operator {
-            background: var(--btn-operator-bg);
-            color: var(--btn-operator-color);
-        }
-
-        .btn-function {
-            background: var(--btn-function-bg);
-            color: var(--btn-function-color);
-            font-size: 13px;
-        }
-
-        .btn-equals {
-            background: var(--btn-equals-bg);
-            color: #fff;
-            font-size: 22px;
-            box-shadow: 0 4px 15px rgba(79,172,254,0.3);
-        }
-
-        .btn-clear {
-            background: var(--btn-clear-bg);
-            color: var(--btn-clear-color);
-        }
-
-        .btn-special {
-            background: var(--btn-special-bg);
-            color: var(--btn-special-color);
-            font-size: 13px;
-        }
-
-        .btn-memory {
-            background: var(--btn-memory-bg);
-            color: var(--btn-memory-color);
-            font-size: 12px;
-        }
-
-        .btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(255,255,255,0);
-            transition: background 0.15s;
-        }
-
-        .btn:hover::after { background: rgba(255,255,255,0.08); }
-        .btn:active::after { background: rgba(255,255,255,0.15); }
-
-        /* PANELS */
-        .side-panel {
-            flex: 1;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .panel-card {
-            background: var(--calc-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: all 0.4s;
-        }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            background: rgba(0,0,0,0.15);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .panel-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .panel-body {
-            padding: 16px;
-        }
-
-        /* GRAPH PANEL */
-        .graph-input-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        .graph-input {
-            flex: 1;
-            min-width: 140px;
-            padding: 10px 14px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .graph-input:focus {
-            border-color: var(--accent);
-        }
-
-        .graph-btn {
-            padding: 10px 20px;
-            background: var(--btn-equals-bg);
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: opacity 0.2s;
-        }
-
-        .graph-btn:hover { opacity: 0.85; }
-
-        .graph-container {
-            position: relative;
-            background: rgba(0,0,0,0.3);
-            border-radius: 12px;
-            overflow: hidden;
-            height: 280px;
-        }
-
-        .graph-functions-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-
-        .graph-fn-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.04);
-            padding: 6px 10px;
-            border-radius: 8px;
-        }
-
-        .fn-color-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .fn-label {
-            flex: 1;
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-family: monospace;
-        }
-
-        .fn-remove {
-            background: none;
-            border: none;
-            color: var(--btn-clear-color);
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        /* HISTORY PANEL */
-        .history-list {
-            max-height: 280px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .history-item {
-            padding: 10px 12px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .history-item:hover { background: rgba(255,255,255,0.09); }
-
-        .history-item .h-expr {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .history-item .h-result {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .history-time {
-            font-size: 10px;
-            color: var(--text-secondary);
-            opacity: 0.6;
-        }
-
-        /* THEME PANEL */
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .theme-card {
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 2px solid transparent;
-            position: relative;
-        }
-
-        .theme-card:hover { transform: translateY(-3px); }
-
-        .theme-card.active {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(79,172,254,0.4);
-        }
-
-        .theme-preview {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .theme-name {
-            text-align: center;
-            font-size: 11px;
-            padding: 6px;
-            background: rgba(0,0,0,0.3);
-            color: var(--text-primary);
-        }
-
-        .theme-check {
-            position: absolute;
-            top: 4px;
-            right: 6px;
-            font-size: 14px;
-            display: none;
-        }
-
-        .theme-card.active .theme-check { display: block; }
-
-        /* CONVERTER PANEL */
-        .converter-tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 14px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
-
-        .converter-tab {
-            flex-shrink: 0;
-            padding: 5px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .converter-tab.active {
-            background: rgba(100,180,255,0.15);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .converter-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .converter-input {
-            flex: 1;
-            padding: 10px 14px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
-        }
-
-        .converter-select {
-            flex: 1;
-            padding: 10px 14px;
-            background: rgba(30,30,60,0.8);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 13px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .converter-result {
-            background: rgba(255,255,255,0.04);
-            border-radius: 10px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .conv-result-val {
-            font-size: 22px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .conv-result-unit {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        /* INSTALL PROMPT */
-        .install-prompt {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(20,20,40,0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px 20px;
-            width: 90%;
-            max-width: 380px;
-            z-index: 1000;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateX(-50%) translateY(100%); opacity: 0; }
-            to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-
-        .install-prompt.visible { display: block; }
-
-        .install-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .install-icon {
-            font-size: 32px;
-        }
-
-        .install-text h3 {
-            font-size: 15px;
-            color: var(--text-primary);
-        }
-
-        .install-text p {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .install-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .install-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: opacity 0.2s;
-        }
-
-        .install-btn-primary {
-            background: var(--btn-equals-bg);
-            color: #fff;
-        }
-
-        .install-btn-secondary {
-            background: rgba(255,255,255,0.08);
-            color: var(--text-secondary);
-        }
-
-        /* MONETIZATION MODAL */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.open { display: flex; }
-
-        .modal {
-            background: rgba(20,20,50,0.95);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 28px;
-            width: 100%;
-            max-width: 480px;
-            position: relative;
-            animation: modalIn 0.3s ease;
-        }
-
-        @keyframes modalIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: rgba(255,255,255,0.08);
-            border: none;
-            color: var(--text-primary);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .modal h2 {
-            font-size: 22px;
-            margin-bottom: 8px;
-        }
-
-        .modal p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .pro-features {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            background: #0a0e14;
+            border-radius: 32px;
+            padding: 20px 24px;
             margin-bottom: 24px;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05);
         }
 
-        .pro-feature-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 10px;
-        }
-
-        .pro-feature-icon { font-size: 20px; }
-        .pro-feature-text { font-size: 13px; color: var(--text-primary); }
-
-        .pricing-cards {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .pricing-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .pricing-card.featured {
-            border-color: var(--accent);
-            background: rgba(79,172,254,0.1);
-        }
-
-        .pricing-card .price {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .pricing-card .period {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .pricing-card .plan-name {
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: 6px;
-            color: var(--accent);
-        }
-
-        .purchase-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--btn-equals-bg);
-            border: none;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        /* STATS BAR */
-        .stats-bar {
-            display: flex;
-            gap: 12px;
-            padding: 10px 0;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 8px 14px;
-            text-align: center;
-            flex: 1;
-            min-width: 80px;
-        }
-
-        .stat-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .stat-label {
-            font-size: 10px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
+        .expression {
+            font-size: 1.2rem;
+            color: #8ea1b5;
+            min-height: 32px;
+            text-align: right;
+            font-family: 'Courier New', 'Fira Code', monospace;
             letter-spacing: 0.5px;
+            word-wrap: break-word;
+            word-break: break-all;
         }
 
-        /* FOOTER */
-        .app-footer {
-            text-align: center;
-            padding: 16px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--border-color);
-            background: rgba(0,0,0,0.2);
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
+        .result {
+            font-size: 2.8rem;
+            font-weight: 600;
+            color: #f0f3f8;
+            text-align: right;
+            font-family: 'Segoe UI', monospace;
+            word-wrap: break-word;
+            word-break: break-word;
+            line-height: 1.2;
             margin-top: 8px;
+            letter-spacing: -0.5px;
         }
 
-        .footer-link {
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 12px;
+        /* button grid */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
         }
 
-        /* ANIMATIONS */
-        @keyframes shake {
-            0%,100% { transform: translateX(0); }
-            20% { transform: translateX(-8px); }
-            40% { transform: translateX(8px); }
-            60% { transform: translateX(-4px); }
-            80% { transform: translateX(4px); }
+        /* general button styling */
+        button {
+            background: #1e293b;
+            border: none;
+            padding: 14px 0;
+            border-radius: 28px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #eef2ff;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+            font-family: inherit;
+            touch-action: manipulation;
         }
 
-        .shake { animation: shake 0.4s ease; }
-
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.25);
-            transform: scale(0);
-            animation: rippleAnim 0.5s linear;
-            pointer-events: none;
+        button:active {
+            transform: scale(0.96);
+            background: #0f172a;
+            box-shadow: 0 1px 2px black;
         }
 
-        @keyframes rippleAnim {
-            to { transform: scale(4); opacity: 0; }
+        /* special button types */
+        .fn-btn {
+            background: #2d3a4b;
+            color: #cbd5e6;
+            font-size: 1rem;
         }
 
-        /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .calc-area { flex-direction: column; align-items: center; }
-            .side-panel { max-width: 440px; width: 100%; }
+        .op-btn {
+            background: #f97316;
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+            box-shadow: 0 3px 6px rgba(249,115,22,0.3);
         }
 
-        @media (max-width: 400px) {
-            .btn { height: 50px; font-size: 14px; }
-            .btn-function { font-size: 11px; }
-            .display-main { font-size: 38px; }
-            .pricing-cards { grid-template-columns: 1fr; }
+        .eq-btn {
+            background: #10b981;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(16,185,129,0.3);
         }
 
-        /* NOTIFICATION */
-        .notification {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: rgba(20,20,50,0.95);
-            border: 1px solid var(--accent);
-            border-radius: 12px;
-            padding: 12px 18px;
-            font-size: 13px;
-            color: var(--text-primary);
-            z-index: 999;
-            animation: notifIn 0.3s ease;
-            max-width: 280px;
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+            font-weight: bold;
         }
 
-        @keyframes notifIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .inv-btn {
+            background: #334155;
+            font-size: 0.9rem;
+        }
+
+        /* second function indicator */
+        .second-mode {
+            background: #475569;
+            box-shadow: inset 0 0 0 2px #facc15;
+        }
+
+        /* responsive: for smaller devices reduce padding & font sizes */
+        @media (max-width: 550px) {
+            .calculator {
+                padding: 14px 16px 22px;
+            }
+            .button-grid {
+                gap: 8px;
+            }
+            button {
+                padding: 10px 0;
+                font-size: 1rem;
+            }
+            .result {
+                font-size: 2rem;
+            }
+            .expression {
+                font-size: 0.9rem;
+            }
+            .fn-btn {
+                font-size: 0.85rem;
+            }
+            .op-btn {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 460px) {
+            .button-grid {
+                gap: 6px;
+            }
+            button {
+                padding: 9px 0;
+                font-size: 0.9rem;
+                border-radius: 24px;
+            }
+            .fn-btn {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* subtle indicator for active shift */
+        .shift-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: #facc15;
+            color: #0f1724;
+            border-radius: 20px;
+            padding: 2px 8px;
+            margin-left: 12px;
+            font-weight: bold;
+        }
+
+        .display-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 8px;
         }
     </style>
 </head>
-<body data-theme="dark">
-
-<!-- APP CONTAINER -->
-<div class="app-container">
-
-    <!-- TOP NAV -->
-    <nav class="top-nav">
-        <div class="app-logo">
-            <span class="logo-icon">🧮</span>
-            <span>ProCalc</span>
-            <span class="badge badge-pro" style="font-size:9px;padding:2px 6px;">PRO</span>
+<body>
+<div class="calculator">
+    <div class="display">
+        <div class="display-header">
+            <div class="expression" id="expressionDisplay">0</div>
+            <div id="shiftIndicator" style="display: none;"><span class="shift-badge">2nd</span></div>
         </div>
-        <div class="nav-actions">
-            <button class="nav-btn" onclick="openModal('themeModal')">🎨 Theme</button>
-            <button class="nav-btn" onclick="openModal('proModal')">⭐ Upgrade</button>
-            <button class="nav-btn" id="installBtn" onclick="installApp()" style="display:none;">📲 Install</button>
-        </div>
-    </nav>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-
-        <!-- TOP AD -->
-        <div class="ad-banner">
-            <div class="ad-inner">
-                <span class="ad-label">Advertisement</span>
-                <span style="font-size:14px;color:var(--text-secondary);">
-                    <!-- Replace with actual Google AdSense code -->
-                    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
-                    Your Ad Here · Google AdSense Banner (728×90)
-                </span>
-            </div>
-        </div>
-
-        <!-- CALC AREA -->
-        <div class="calc-area">
-
-            <!-- CALCULATOR -->
-            <div class="calculator-wrapper">
-                <div class="calculator">
-
-                    <!-- DISPLAY -->
-                    <div class="display" id="display">
-                        <div class="display-badges">
-                            <span class="badge badge-mem" id="memBadge">M</span>
-                            <span class="badge badge-angle" id="angleBadge">DEG</span>
-                        </div>
-                        <div class="display-history" id="displayHistory"></div>
-                        <div class="display-expression" id="displayExpression"></div>
-                        <div class="display-main" id="displayMain">0</div>
-                    </div>
-
-                    <!-- MODE BAR -->
-                    <div class="mode-bar">
-                        <button class="mode-tab active" id="tab-standard" onclick="setMode('standard')">Standard</button>
-                        <button class="mode-tab" id="tab-scientific" onclick="setMode('scientific')">Scientific</button>
-                        <button class="mode-tab" id="tab-history" onclick="setMode('history')">History</button>
-                    </div>
-
-                    <!-- STANDARD BUTTONS -->
-                    <div class="buttons standard-grid" id="buttons-standard">
-                        <button class="btn btn-special" onclick="memAct('MC',$event)">MC</button>
-                        <button class="btn btn-special" onclick="memAct('MR',$event)">MR</button>
-                        <button class="btn btn-special" onclick="memAct('M+',$event)">M+</button>
-                        <button class="btn btn-special" onclick="memAct('M-',$event)">M−</button>
-
-                        <button class="btn btn-clear" onclick="clearAll(event)">AC</button>
-                        <button class="btn btn-function" onclick="toggleSign(event)">+/−</button>
-                        <button class="btn btn-function" onclick="percentage(event)">%</button>
-                        <button class="btn btn-operator" onclick="appendOp('÷',event)">÷</button>
-
-                        <button class="btn btn-number" onclick="appendNum('7',event)">7</button>
-                        <button class="btn btn-number" onclick="appendNum('8',event)">8</button>
-                        <button class="btn btn-number" onclick="appendNum('9',event)">9</button>
-                        <button class="btn btn-operator" onclick="appendOp('×',event)">×</button>
-
-                        <button class="btn btn-number" onclick="appendNum('4',event)">4</button>
-                        <button class="btn btn-number" onclick="appendNum('5',event)">5</button>
-                        <button class="btn btn-number" onclick="appendNum('6',event)">6</button>
-                        <button class="btn btn-operator" onclick="appendOp('−',event)">−</button>
-
-                        <button class="btn btn-number" onclick="appendNum('1',event)">1</button>
-                        <button class="btn btn-number" onclick="appendNum('2',event)">2</button>
-                        <button class="btn btn-number" onclick="appendNum('3',event)">3</button>
-                        <button class="btn btn-operator" onclick="appendOp('+',event)">+</button>
-
-                        <button class="btn btn-number" onclick="appendNum('0',event)" style="grid-column:span 2;justify-content:flex-start;padding-left:22px">0</button>
-                        <button class="btn btn-number" onclick="appendDec(event)">.</button>
-                        <button class="btn btn-equals" onclick="calculate(event)">=</button>
-                    </div>
-
-                    <!-- SCIENTIFIC BUTTONS -->
-                    <div class="buttons scientific-grid" id="buttons-scientific" style="display:none">
-                        <button class="btn btn-memory" onclick="memAct('MC',event)">MC</button>
-                        <button class="btn btn-memory" onclick="memAct('MR',event)">MR</button>
-                        <button class="btn btn-memory" onclick="memAct('MS',event)">MS</button>
-                        <button class="btn btn-memory" onclick="memAct('M+',event)">M+</button>
-                        <button class="btn btn-memory" onclick="memAct('M-',event)">M−</button>
-
-                        <button class="btn btn-function" onclick="toggle2nd(event)" id="btn2nd">2nd</button>
-                        <button class="btn btn-function" onclick="sciFn('sin',event)" id="btnSin">sin</button>
-                        <button class="btn btn-function" onclick="sciFn('cos',event)" id="btnCos">cos</button>
-                        <button class="btn btn-function" onclick="sciFn('tan',event)" id="btnTan">tan</button>
-                        <button class="btn btn-function" onclick="toggleAngle(event)" id="btnAngle">DEG</button>
-
-                        <button class="btn btn-function" onclick="sciFn('x²',event)">x²</button>
-                        <button class="btn btn-function" onclick="sciFn('x³',event)">x³</button>
-                        <button class="btn btn-function" onclick="sciFn('xⁿ',event)">xʸ</button>
-                        <button class="btn btn-function" onclick="sciFn('eˣ',event)">eˣ</button>
-                        <button class="btn btn-function" onclick="sciFn('10ˣ',event)">10ˣ</button>
-
-                        <button class="btn btn-function" onclick="sciFn('√',event)">√x</button>
-                        <button class="btn btn-function" onclick="sciFn('∛',event)">∛x</button>
-                        <button class="btn btn-function" onclick="sciFn('ʸ√',event)">ʸ√x</button>
-                        <button class="btn btn-function" onclick="sciFn('ln',event)">ln</button>
-                        <button class="btn btn-function" onclick="sciFn('log',event)">log</button>
-
-                        <button class="btn btn-function" onclick="sciFn('(',event)">(</button>
-                        <button class="btn btn-function" onclick="sciFn(')',event)">)</button>
-                        <button class="btn btn-function" onclick="sciFn('1/x',event)">1/x</button>
-                        <button class="btn btn-function" onclick="sciFn('|x|',event)">|x|</button>
-                        <button class="btn btn-function" onclick="sciFn('n!',event)">n!</button>
-
-                        <button class="btn btn-function" onclick="sciFn('π',event)">π</button>
-                        <button class="btn btn-function" onclick="sciFn('e',event)">e</button>
-                        <button class="btn btn-function" onclick="sciFn('Rand',event)">Rand</button>
-                        <button class="btn btn-clear" onclick="backspace(event)" style="font-size:18px">⌫</button>
-                        <button class="btn btn-clear" onclick="clearAll(event)">AC</button>
-
-                        <button class="btn btn-function" onclick="toggleSign(event)">+/−</button>
-                        <button class="btn btn-number" onclick="appendNum('7',event)">7</button>
-                        <button class="btn btn-number" onclick="appendNum('8',event)">8</button>
-                        <button class="btn btn-number" onclick="appendNum('9',event)">9</button>
-                        <button class="btn btn-operator" onclick="appendOp('÷',event)">÷</button>
-
-                        <button class="btn btn-function" onclick="percentage(event)">%</button>
-                        <button class="btn btn-number" onclick="appendNum('4',event)">4</button>
-                        <button class="btn btn-number" onclick="appendNum('5',event)">5</button>
-                        <button class="btn btn-number" onclick="appendNum('6',event)">6</button>
-                        <button class="btn btn-operator" onclick="appendOp('×',event)">×</button>
-
-                        <button class="btn btn-function" onclick="sciFn('EE',event)">EE</button>
-                        <button class="btn btn-number" onclick="appendNum('1',event)">1</button>
-                        <button class="btn btn-number" onclick="appendNum('2',event)">2</button>
-                        <button class="btn btn-number" onclick="appendNum('3',event)">3</button>
-                        <button class="btn btn-operator" onclick="appendOp('−',event)">−</button>
-
-                        <button class="btn btn-function" onclick="backspace(event)" style="font-size:16px">⌫</button>
-                        <button class="btn btn-number" onclick="appendNum('0',event)" style="grid-column:span 2;justify-content:flex-start;padding-left:22px">0</button>
-                        <button class="btn btn-number" onclick="appendDec(event)">.</button>
-                        <button class="btn btn-operator" onclick="appendOp('+',event)">+</button>
-
-                        <button class="btn btn-equals" onclick="calculate(event)" style="grid-column:span 5;height:52px;font-size:22px">=</button>
-                    </div>
-
-                    <!-- HISTORY IN CALC -->
-                    <div id="buttons-history" style="display:none;padding:12px">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-                            <span style="font-size:13px;color:var(--text-secondary)">Calculation History</span>
-                            <button onclick="clearHistory()" style="background:none;border:none;color:var(--btn-clear-color);font-size:12px;cursor:pointer">Clear All</button>
-                        </div>
-                        <div class="history-list" id="calcHistoryList"></div>
-                    </div>
-
-                </div>
-
-                <!-- STATS -->
-                <div class="stats-bar" id="statsBar">
-                    <div class="stat-item">
-                        <div class="stat-value" id="statCalcs">0</div>
-                        <div class="stat-label">Calculations</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="statSession">0:00</div>
-                        <div class="stat-label">Session</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="statGraphs">0</div>
-                        <div class="stat-label">Graphs</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SIDE PANELS -->
-            <div class="side-panel">
-
-                <!-- GRAPH PANEL -->
-                <div class="panel-card">
-                    <div class="panel-header">
-                        <div class="panel-title">📈 Function Grapher</div>
-                        <button class="nav-btn" onclick="clearGraph()" style="font-size:11px;padding:4px 10px">Clear</button>
-                    </div>
-                    <div class="panel-body">
-                        <div class="graph-functions-list" id="graphFnList"></div>
-                        <div class="graph-input-row">
-                            <input class="graph-input" id="graphInput" placeholder="y = sin(x), x^2, etc." onkeydown="if(event.key==='Enter')plotGraph()"/>
-                            <button class="graph-btn" onclick="plotGraph()">Plot</button>
-                        </div>
-                        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-                            <div style="flex:1;min-width:80px">
-                                <label style="font-size:11px;color:var(--text-secondary)">X Min</label>
-                                <input class="graph-input" id="xMin" value="-10" style="margin-top:2px;height:36px;font-size:13px"/>
-                            </div>
-                            <div style="flex:1;min-width:80px">
-                                <label style="font-size:11px;color:var(--text-secondary)">X Max</label>
-                                <input class="graph-input" id="xMax" value="10" style="margin-top:2px;height:36px;font-size:13px"/>
-                            </div>
-                        </div>
-                        <div class="graph-container">
-                            <canvas id="graphCanvas"></canvas>
-                        </div>
-                        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
-                            <button class="nav-btn" onclick="quickPlot('sin(x)')">sin(x)</button>
-                            <button class="nav-btn" onclick="quickPlot('cos(x)')">cos(x)</button>
-                            <button class="nav-btn" onclick="quickPlot('x^2')">x²</button>
-                            <button class="nav-btn" onclick="quickPlot('tan(x)')">tan(x)</button>
-                            <button class="nav-btn" onclick="quickPlot('Math.sqrt(x)')">√x</button>
-                            <button class="nav-btn" onclick="quickPlot('Math.log(x)')">ln(x)</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CONVERTER PANEL -->
-                <div class="panel-card">
-                    <div class="panel-header">
-                        <div class="panel-title">🔄 Unit Converter</div>
-                    </div>
-                    <div class="panel-body">
-                        <div class="converter-tabs" id="converterTabs">
-                            <button class="converter-tab active" onclick="setConverter('length',this)">Length</button>
-                            <button class="converter-tab" onclick="setConverter('weight',this)">Weight</button>
-                            <button class="converter-tab" onclick="setConverter('temp',this)">Temp</button>
-                            <button class="converter-tab" onclick="setConverter('area',this)">Area</button>
-                            <button class="converter-tab" onclick="setConverter('speed',this)">Speed</button>
-                            <button class="converter-tab" onclick="setConverter('data',this)">Data</button>
-                        </div>
-                        <div class="converter-row">
-                            <input class="converter-input" id="convInput" type="number" value="1" oninput="doConvert()"/>
-                            <select class="converter-select" id="convFrom" onchange="doConvert()"></select>
-                        </div>
-                        <div style="text-align:center;font-size:22px;color:var(--accent);margin:4px 0">⇅</div>
-                        <div class="converter-row">
-                            <div style="flex:1"></div>
-                            <select class="converter-select" id="convTo" onchange="doConvert()"></select>
-                        </div>
-                        <div class="converter-result">
-                            <div>
-                                <div class="h-expr" id="convExpr" style="font-size:12px;color:var(--text-secondary)">Result</div>
-                                <div class="conv-result-val" id="convResult">—</div>
-                            </div>
-                            <button class="nav-btn" onclick="copyConvResult()">Copy</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- HISTORY SIDE PANEL -->
-                <div class="panel-card">
-                    <div class="panel-header">
-                        <div class="panel-title">📋 History</div>
-                        <button onclick="clearHistory()" style="background:none;border:none;color:var(--btn-clear-color);font-size:12px;cursor:pointer">Clear</button>
-                    </div>
-                    <div class="panel-body" style="padding:10px">
-                        <div class="history-list" id="sideHistoryList"></div>
-                    </div>
-                </div>
-
-                <!-- SIDE AD -->
-                <div class="ad-banner" style="max-width:100%;min-height:250px">
-                    <div class="ad-inner">
-                        <span class="ad-label">Advertisement</span>
-                        <span style="font-size:14px;color:var(--text-secondary)">
-                            <!-- Replace with Google AdSense 300x250 -->
-                            Your Ad Here · (300×250)
-                        </span>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- BOTTOM AD -->
-        <div class="ad-banner">
-            <div class="ad-inner">
-                <span class="ad-label">Advertisement</span>
-                <span style="font-size:14px;color:var(--text-secondary)">
-                    <!-- Replace with Google AdSense Footer Banner -->
-                    Your Ad Here · Google AdSense Banner (728×90)
-                </span>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- FOOTER -->
-    <footer class="app-footer">
-        <div>© 2024 ProCalc · Professional Scientific Calculator</div>
-        <div class="footer-links">
-            <a href="#" class="footer-link">Privacy Policy</a>
-            <a href="#" class="footer-link">Terms of Service</a>
-            <a href="#" class="footer-link" onclick="openModal('proModal');return false">Upgrade to Pro</a>
-            <a href="#" class="footer-link" onclick="shareApp();return false">Share App</a>
-        </div>
-    </footer>
-</div>
-
-<!-- INSTALL PROMPT -->
-<div class="install-prompt" id="installPrompt">
-    <div class="install-header">
-        <div class="install-icon">🧮</div>
-        <div class="install-text">
-            <h3>Install ProCalc</h3>
-            <p>Add to your home screen for quick access — works offline!</p>
-        </div>
+        <div class="result" id="resultDisplay">0</div>
     </div>
-    <div class="install-actions">
-        <button class="install-btn install-btn-primary" onclick="installApp()">Install App</button>
-        <button class="install-btn install-btn-secondary" onclick="dismissInstall()">Not Now</button>
-    </div>
-</div>
-
-<!-- THEME MODAL -->
-<div class="modal-overlay" id="themeModal">
-    <div class="modal">
-        <button class="modal-close" onclick="closeModal('themeModal')">✕</button>
-        <h2>🎨 Choose Theme</h2>
-        <p>Personalize your calculator with beautiful themes.</p>
-        <div class="theme-grid">
-            <div class="theme-card active" id="theme-dark" onclick="applyTheme('dark')">
-                <div class="theme-preview" style="background:linear-gradient(135deg,#0f0c29,#302b63)">🌙</div>
-                <div class="theme-name">Dark</div>
-                <span class="theme-check">✅</span>
-            </div>
-            <div class="theme-card" id="theme-light" onclick="applyTheme('light')">
-                <div class="theme-preview" style="background:linear-gradient(135deg,#e8ecf4,#d5dde8)">☀️</div>
-                <div class="theme-name">Light</div>
-                <span class="theme-check">✅</span>
-            </div>
-            <div class="theme-card" id="theme-neon" onclick="applyTheme('neon')">
-                <div class="theme-preview" style="background:linear-gradient(135deg,#000,#001a00)">💚</div>
-                <div class="theme-name">Neon</div>
-                <span class="theme-check">✅</span>
-            </div>
-            <div class="theme-card" id="theme-sunset" onclick="applyTheme('sunset')">
-                <div class="theme-preview" style="background:linear-gradient(135deg,#1a1a2e,#f953c6)">🌅</div>
-                <div class="theme-name">Sunset</div>
-                <span class="theme-check">✅</span>
-            </div>
-            <div class="theme-card" id="theme-ocean" onclick="applyTheme('ocean')">
-                <div class="theme-preview" style="background:linear-gradient(135deg,#000428,#004e92)">🌊</div>
-                <div class="theme-name">Ocean</div>
-                <span class="theme-check">✅</span>
-            </div>
-            <div class="theme-card" onclick="openModal('proModal')">
-                <div class="theme-preview" style="background:linear-gradient(135deg,#333,#555)">🔒</div>
-                <div class="theme-name">More (Pro)</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- PRO / MONETIZE MODAL -->
-<div class="modal-overlay" id="proModal">
-    <div class="modal">
-        <button class="modal-close" onclick="closeModal('proModal')">✕</button>
-        <h2>⭐ Upgrade to Pro</h2>
-        <p>Unlock the full power of ProCalc with unlimited features.</p>
-        <div class="pro-features">
-            <div class="pro-feature-item">
-                <span class="pro-feature-icon">📈</span>
-                <span class="pro-feature-text">Advanced graphing with multiple functions</span>
-            </div>
-            <div class="pro-feature-item">
-                <span class="pro-feature-icon">🎨</span>
-                <span class="pro-feature-text">All premium themes & custom colors</span>
-            </div>
-            <div class="pro-feature-item">
-                <span class="pro-feature-icon">🔄</span>
-                <span class="pro-feature-text">Full unit converter (50+ units)</span>
-            </div>
-            <div class="pro-feature-item">
-                <span class="pro-feature-icon">☁️</span>
-                <span class="pro-feature-text">Cloud sync history across devices</span>
-            </div>
-            <div class="pro-feature-item">
-                <span class="pro-feature-icon">🚫</span>
-                <span class="pro-feature-text">Remove all advertisements</span>
-            </div>
-            <div class="pro-feature-item">
-                <span class="pro-feature-icon">📱</span>
-                <span class="pro-feature-text">Android & iOS native app access</span>
-            </div>
-        </div>
-        <div class="pricing-cards">
-            <div class="pricing-card" onclick="selectPlan('monthly')">
-                <div class="price">$1.99</div>
-                <div class="period">per month</div>
-                <div class="plan-name">Monthly</div>
-            </div>
-            <div class="pricing-card featured" onclick="selectPlan('yearly')">
-                <div style="font-size:10px;color:#4facfe;margin-bottom:4px;font-weight:700">BEST VALUE</div>
-                <div class="price">$9.99</div>
-                <div class="period">per year</div>
-                <div class="plan-name">Annual · Save 58%</div>
-            </div>
-        </div>
-        <button class="purchase-btn" onclick="purchase()">🚀 Get Pro Now</button>
-        <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-secondary)">
-            7-day free trial · Cancel anytime · Secure payment
-        </div>
+    <div class="button-grid" id="buttonsContainer">
+        <!-- buttons will be generated by js for clarity, but we'll define layout in JS to keep html minimal -->
     </div>
 </div>
 
 <script>
-// ================================================================
-// STATE
-// ================================================================
-const S = {
-    current: '0',
-    pendingVal: null,
-    pendingOp: null,
-    waitingOp: false,
-    justCalc: false,
-    memory: 0,
-    hasMemory: false,
-    angleMode: 'DEG',
-    is2nd: false,
-    history: JSON.parse(localStorage.getItem('calcHistory') || '[]'),
-    mode: 'standard',
-    theme: localStorage.getItem('calcTheme') || 'dark',
-    calcCount: parseInt(localStorage.getItem('calcCount') || '0'),
-    graphCount: parseInt(localStorage.getItem('graphCount') || '0'),
-    sessionStart: Date.now(),
-    graphFunctions: [],
-    chartInstance: null,
-    selectedPlan: 'yearly',
-    converterType: 'length',
-    deferredPrompt: null
-};
-
-// ================================================================
-// DISPLAY
-// ================================================================
-function updateDisplay() {
-    const main = document.getElementById('displayMain');
-    const expr = document.getElementById('displayExpression');
-
-    main.textContent = S.current;
-    const len = S.current.length;
-    main.classList.remove('small','xsmall');
-    if (len > 15) main.classList.add('xsmall');
-    else if (len > 10) main.classList.add('small');
-
-    let exprTxt = '';
-    if (S.pendingVal !== null && S.pendingOp) {
-        exprTxt = `${fmtNum(S.pendingVal)} ${S.pendingOp}`;
+    // ---------- Scientific Calculator Core ----------
+    // states
+    let currentExpression = "0";       // what user sees in the expression line
+    let currentResult = "0";           // last computed value shown in big display
+    let lastOperator = null;            // not heavily used, but for consistency
+    let waitingForOperand = false;      // after "=" or error, next digit starts new expression
+    let shiftActive = false;             // 2nd function toggle (sin⁻¹, cos⁻¹, tan⁻¹, sqrt, etc)
+    
+    // DOM elements
+    const exprDiv = document.getElementById("expressionDisplay");
+    const resultDiv = document.getElementById("resultDisplay");
+    const shiftIndicatorSpan = document.getElementById("shiftIndicator");
+    
+    // Helper: update UI from currentExpression & currentResult
+    function updateDisplay() {
+        exprDiv.innerText = currentExpression === "" ? "0" : currentExpression;
+        resultDiv.innerText = currentResult;
     }
-    expr.textContent = exprTxt;
-
-    document.getElementById('memBadge').classList.toggle('active', S.hasMemory);
-    document.getElementById('angleBadge').textContent = S.angleMode;
-    const ab = document.getElementById('btnAngle');
-    if (ab) ab.textContent = S.angleMode;
-    updateStats();
-}
-
-function fmtNum(n) {
-    if (!isFinite(n) || isNaN(n)) return String(n);
-    const s = String(n);
-    return s.length > 12 ? parseFloat(n.toPrecision(10)).toString() : s;
-}
-
-function fmtResult(n) {
-    if (isNaN(n)) return 'NaN';
-    if (!isFinite(n)) return n > 0 ? 'Infinity' : '-Infinity';
-    let r = parseFloat(n.toPrecision(12));
-    let s = String(r);
-    if (s.length > 15) s = n.toExponential(6);
-    return s;
-}
-
-function showError(msg) {
-    S.current = msg || 'Error';
-    S.waitingOp = true;
-    S.justCalc = false;
-    updateDisplay();
-    const d = document.getElementById('display');
-    d.classList.add('shake');
-    setTimeout(() => d.classList.remove('shake'), 400);
-}
-
-// ================================================================
-// INPUT
-// ================================================================
-function appendNum(d, e) {
-    ripple(e);
-    if (S.waitingOp) { S.current = d; S.waitingOp = false; }
-    else if (S.justCalc) { S.current = d; S.justCalc = false; S.pendingVal = null; S.pendingOp = null; }
-    else {
-        if (S.current === '0' && d !== '.') S.current = d;
-        else if (S.current.length < 16) S.current += d;
-    }
-    updateDisplay();
-}
-
-function appendDec(e) {
-    ripple(e);
-    if (S.waitingOp || S.justCalc) { S.current = '0.'; S.waitingOp = false; S.justCalc = false; }
-    else if (!S.current.includes('.')) S.current += '.';
-    updateDisplay();
-}
-
-function appendOp(op, e) {
-    ripple(e);
-    const cur = parseFloat(S.current);
-    if (S.pendingOp && !S.waitingOp) {
-        const res = computeBasic(S.pendingVal, cur, S.pendingOp);
-        if (res === null) return;
-        S.current = fmtResult(res);
-        S.pendingVal = parseFloat(S.current);
-    } else {
-        S.pendingVal = cur;
-    }
-    S.pendingOp = op;
-    S.waitingOp = true;
-    S.justCalc = false;
-    updateDisplay();
-}
-
-function computeBasic(a, b, op) {
-    switch (op) {
-        case '+': return a + b;
-        case '−': return a - b;
-        case '×': return a * b;
-        case '÷': if (b === 0) { showError('Cannot ÷ 0'); return null; } return a / b;
-        case 'xⁿ': return Math.pow(a, b);
-        case 'ʸ√': return Math.pow(b, 1/a);
-    }
-    return b;
-}
-
-// ================================================================
-// CALCULATE
-// ================================================================
-function calculate(e) {
-    ripple(e);
-    if (!S.pendingOp && S.pendingVal === null) return;
-    if (S.waitingOp) return;
-
-    const cur = parseFloat(S.current);
-    if (isNaN(cur)) return;
-
-    const res = computeBasic(S.pendingVal, cur, S.pendingOp);
-    if (res === null) return;
-
-    const exprStr = `${fmtNum(S.pendingVal)} ${S.pendingOp} ${fmtNum(cur)}`;
-    const resStr = fmtResult(res);
-
-    addHistory(exprStr, resStr);
-    S.calcCount++;
-    localStorage.setItem('calcCount', S.calcCount);
-
-    S.current = resStr;
-    S.pendingVal = null;
-    S.pendingOp = null;
-    S.waitingOp = false;
-    S.justCalc = true;
-    updateDisplay();
-}
-
-// ================================================================
-// CLEAR / BACKSPACE
-// ================================================================
-function clearAll(e) {
-    ripple(e);
-    S.current = '0';
-    S.pendingVal = null;
-    S.pendingOp = null;
-    S.waitingOp = false;
-    S.justCalc = false;
-    updateDisplay();
-}
-
-function backspace(e) {
-    ripple(e);
-    if (S.justCalc || S.waitingOp) { S.current = '0'; S.waitingOp = false; S.justCalc = false; }
-    else S.current = S.current.slice(0,-1) || '0';
-    updateDisplay();
-}
-
-function toggleSign(e) {
-    ripple(e);
-    const v = parseFloat(S.current);
-    if (!isNaN(v)) { S.current = fmtResult(-v); updateDisplay(); }
-}
-
-function percentage(e) {
-    ripple(e);
-    const v = parseFloat(S.current);
-    if (!isNaN(v)) { S.current = fmtResult(v/100); updateDisplay(); }
-}
-
-// ================================================================
-// SCIENTIFIC
-// ================================================================
-function toRad(d) { return d * Math.PI / 180; }
-function toDeg(r) { return r * 180 / Math.PI; }
-function getAng(v) { return S.angleMode === 'DEG' ? toRad(v) : v; }
-
-function toggle2nd(e) {
-    ripple(e);
-    S.is2nd = !S.is2nd;
-    const b = document.getElementById('btn2nd');
-    b.style.background = S.is2nd ? 'rgba(100,200,255,0.3)' : '';
-    const labels = S.is2nd
-        ? { sin:'sin⁻¹', cos:'cos⁻¹', tan:'tan⁻¹' }
-        : { sin:'sin', cos:'cos', tan:'tan' };
-    ['sin','cos','tan'].forEach(k => {
-        const el = document.getElementById('btn'+k.charAt(0).toUpperCase()+k.slice(1));
-        if (el) el.textContent = labels[k];
-    });
-}
-
-function toggleAngle(e) {
-    ripple(e);
-    S.angleMode = S.angleMode === 'DEG' ? 'RAD' : 'DEG';
-    updateDisplay();
-}
-
-function sciFn(fn, e) {
-    ripple(e);
-    const v = parseFloat(S.current);
-    let res;
-
-    if (fn === 'sin' || fn === 'cos' || fn === 'tan') {
-        if (S.is2nd) fn = 'a' + fn;
-    }
-
-    try {
-        switch (fn) {
-            case 'sin': res = Math.sin(getAng(v)); break;
-            case 'cos': res = Math.cos(getAng(v)); break;
-            case 'tan':
-                if (S.angleMode==='DEG' && v%180===90) { showError('Undefined'); return; }
-                res = Math.tan(getAng(v)); break;
-            case 'asin': if(Math.abs(v)>1){showError('Domain Error');return;} res=S.angleMode==='DEG'?toDeg(Math.asin(v)):Math.asin(v); break;
-            case 'acos': if(Math.abs(v)>1){showError('Domain Error');return;} res=S.angleMode==='DEG'?toDeg(Math.acos(v)):Math.acos(v); break;
-            case 'atan': res=S.angleMode==='DEG'?toDeg(Math.atan(v)):Math.atan(v); break;
-            case 'x²': res=v*v; break;
-            case 'x³': res=v*v*v; break;
-            case 'xⁿ': S.pendingVal=v; S.pendingOp='xⁿ'; S.waitingOp=true; updateDisplay(); return;
-            case 'eˣ': res=Math.exp(v); break;
-            case '10ˣ': res=Math.pow(10,v); break;
-            case '√': if(v<0){showError('Domain Error');return;} res=Math.sqrt(v); break;
-            case '∛': res=Math.cbrt(v); break;
-            case 'ʸ√': S.pendingVal=v; S.pendingOp='ʸ√'; S.waitingOp=true; updateDisplay(); return;
-            case 'ln': if(v<=0){showError('Domain Error');return;} res=Math.log(v); break;
-            case 'log': if(v<=0){showError('Domain Error');return;} res=Math.log10(v); break;
-            case '1/x': if(v===0){showError('Cannot ÷ 0');return;} res=1/v; break;
-            case '|x|': res=Math.abs(v); break;
-            case 'n!': if(v<0||v!==Math.floor(v)){showError('Domain Error');return;} res=factorial(v); break;
-            case 'π': S.current=String(Math.PI); S.justCalc=true; updateDisplay(); return;
-            case 'e': S.current=String(Math.E); S.justCalc=true; updateDisplay(); return;
-            case 'Rand': res=Math.random(); break;
-            case 'EE': S.current+='e'; updateDisplay(); return;
-            case '(': case ')': return;
-            default: return;
-        }
-        if (res === undefined) return;
-        const rs = fmtResult(res);
-        addHistory(`${fn}(${v})`, rs);
-        S.calcCount++;
-        localStorage.setItem('calcCount', S.calcCount);
-        S.current = rs;
-        S.justCalc = true;
-        S.waitingOp = false;
-        updateDisplay();
-    } catch(err) { showError('Error'); }
-}
-
-function factorial(n) {
-    if (n>170) return Infinity;
-    if (n<=1) return 1;
-    let r=1; for(let i=2;i<=n;i++) r*=i; return r;
-}
-
-// ================================================================
-// MEMORY
-// ================================================================
-function memAct(act, e) {
-    ripple(e);
-    const v = parseFloat(S.current);
-    switch(act) {
-        case 'MC': S.memory=0; S.hasMemory=false; break;
-        case 'MR': S.current=fmtResult(S.memory); S.justCalc=true; break;
-        case 'MS': S.memory=v; S.hasMemory=true; break;
-        case 'M+': S.memory+=v; S.hasMemory=true; break;
-        case 'M-': S.memory-=v; S.hasMemory=true; break;
-    }
-    updateDisplay();
-    showNotif(`Memory: ${fmtResult(S.memory)}`);
-}
-
-// ================================================================
-// HISTORY
-// ================================================================
-function addHistory(expr, result) {
-    S.history.unshift({ expr, result, time: new Date().toLocaleTimeString() });
-    if (S.history.length > 100) S.history.pop();
-    localStorage.setItem('calcHistory', JSON.stringify(S.history));
-    renderHistory();
-}
-
-function renderHistory() {
-    const html = S.history.length === 0
-        ? '<div style="text-align:center;color:var(--text-secondary);padding:20px;font-size:13px">No history yet</div>'
-        : S.history.map((h,i) => `
-            <div class="history-item" onclick="useHistory(${i})">
-                <div>
-                    <div class="h-expr">${h.expr}</div>
-                    <div class="h-result">= ${h.result}</div>
-                </div>
-                <div class="history-time">${h.time}</div>
-            </div>`).join('');
-
-    const el1 = document.getElementById('calcHistoryList');
-    const el2 = document.getElementById('sideHistoryList');
-    if (el1) el1.innerHTML = html;
-    if (el2) el2.innerHTML = html;
-}
-
-function useHistory(i) {
-    S.current = S.history[i].result;
-    S.justCalc = true;
-    updateDisplay();
-}
-
-function clearHistory() {
-    S.history = [];
-    localStorage.setItem('calcHistory', '[]');
-    renderHistory();
-    showNotif('History cleared');
-}
-
-// ================================================================
-// MODE
-// ================================================================
-function setMode(mode) {
-    S.mode = mode;
-    ['standard','scientific','history'].forEach(m => {
-        document.getElementById(`tab-${m}`).classList.toggle('active', m===mode);
-        document.getElementById(`buttons-${m}`).style.display = m===mode ? (m==='scientific'?'grid':m==='standard'?'grid':'block') : 'none';
-    });
-    if (mode === 'history') renderHistory();
-}
-
-// ================================================================
-// GRAPHING
-// ================================================================
-const COLORS = ['#4facfe','#f953c6','#43e97b','#fa8231','#a29bfe','#fd79a8'];
-
-function plotGraph() {
-    const input = document.getElementById('graphInput').value.trim();
-    if (!input) return;
-
-    const xMin = parseFloat(document.getElementById('xMin').value) || -10;
-    const xMax = parseFloat(document.getElementById('xMax').value) || 10;
-
-    if (S.graphFunctions.length >= 6) {
-        showNotif('Max 6 functions. Clear some first.', 'warn');
-        return;
-    }
-
-    const color = COLORS[S.graphFunctions.length % COLORS.length];
-    S.graphFunctions.push({ expr: input, color });
-    document.getElementById('graphInput').value = '';
-    S.graphCount++;
-    localStorage.setItem('graphCount', S.graphCount);
-    renderGraph(xMin, xMax);
-    renderGraphFnList();
-    updateStats();
-}
-
-function quickPlot(expr) {
-    document.getElementById('graphInput').value = expr;
-    plotGraph();
-}
-
-function parseExpr(expr, x) {
-    // Safe math expression parser
-    let e = expr
-        .replace(/\^/g, '**')
-        .replace(/sin\(/g, 'Math.sin(')
-        .replace(/cos\(/g, 'Math.cos(')
-        .replace(/tan\(/g, 'Math.tan(')
-        .replace(/sqrt\(/g, 'Math.sqrt(')
-        .replace(/log\(/g, 'Math.log10(')
-        .replace(/ln\(/g, 'Math.log(')
-        .replace(/abs\(/g, 'Math.abs(')
-        .replace(/pi/g, 'Math.PI')
-        .replace(/π/g, 'Math.PI')
-        .replace(/e(?![a-zA-Z])/g, 'Math.E');
-    try {
-        // eslint-disable-next-line no-new-func
-        return Function('x', `"use strict"; return (${e})`)(x);
-    } catch { return NaN; }
-}
-
-function renderGraph(xMin, xMax) {
-    const canvas = document.getElementById('graphCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const steps = 300;
-    const step = (xMax - xMin) / steps;
-    const labels = [];
-    const datasets = S.graphFunctions.map(fn => {
-        const data = [];
-        for (let i = 0; i <= steps; i++) {
-            const x = xMin + i * step;
-            if (i === 0) labels.push(x.toFixed(1));
-            const y = parseExpr(fn.expr, x);
-            data.push({ x, y: isFinite(y) ? y : null });
-        }
-        return {
-            label: `y = ${fn.expr}`,
-            data,
-            borderColor: fn.color,
-            backgroundColor: fn.color + '22',
-            borderWidth: 2,
-            pointRadius: 0,
-            tension: 0.2,
-            spanGaps: false
-        };
-    });
-
-    if (S.chartInstance) S.chartInstance.destroy();
-
-    S.chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: { datasets },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: { duration: 400 },
-            scales: {
-                x: {
-                    type: 'linear',
-                    min: xMin,
-                    max: xMax,
-                    grid: { color: 'rgba(255,255,255,0.08)' },
-                    ticks: { color: 'rgba(255,255,255,0.5)', maxTicksLimit: 8 }
-                },
-                y: {
-                    grid: { color: 'rgba(255,255,255,0.08)' },
-                    ticks: { color: 'rgba(255,255,255,0.5)', maxTicksLimit: 8 }
-                }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                    backgroundColor: 'rgba(20,20,50,0.9)',
-                    titleColor: 'rgba(255,255,255,0.8)',
-                    bodyColor: 'rgba(255,255,255,0.6)'
-                }
-            }
-        }
-    });
-}
-
-function renderGraphFnList() {
-    const list = document.getElementById('graphFnList');
-    list.innerHTML = S.graphFunctions.map((fn, i) => `
-        <div class="graph-fn-item">
-            <div class="fn-color-dot" style="background:${fn.color}"></div>
-            <div class="fn-label">y = ${fn.expr}</div>
-            <button class="fn-remove" onclick="removeGraphFn(${i})">✕</button>
-        </div>`).join('');
-}
-
-function removeGraphFn(i) {
-    S.graphFunctions.splice(i, 1);
-    const xMin = parseFloat(document.getElementById('xMin').value) || -10;
-    const xMax = parseFloat(document.getElementById('xMax').value) || 10;
-    if (S.graphFunctions.length > 0) renderGraph(xMin, xMax);
-    else if (S.chartInstance) { S.chartInstance.destroy(); S.chartInstance = null; }
-    renderGraphFnList();
-}
-
-function clearGraph() {
-    S.graphFunctions = [];
-    if (S.chartInstance) { S.chartInstance.destroy(); S.chartInstance = null; }
-    renderGraphFnList();
-    showNotif('Graph cleared');
-}
-
-// ================================================================
-// UNIT CONVERTER
-// ================================================================
-const CONVERTERS = {
-    length: {
-        units: ['Meter','Kilometer','Centimeter','Millimeter','Mile','Yard','Foot','Inch','Nautical Mile'],
-        base: { Meter:1, Kilometer:0.001, Centimeter:100, Millimeter:1000, Mile:0.000621371, Yard:1.09361, Foot:3.28084, Inch:39.3701, 'Nautical Mile':0.000539957 }
-    },
-    weight: {
-        units: ['Kilogram','Gram','Milligram','Pound','Ounce','Ton','Stone'],
-        base: { Kilogram:1, Gram:1000, Milligram:1e6, Pound:2.20462, Ounce:35.274, Ton:0.001, Stone:0.157473 }
-    },
-    temp: {
-        units: ['Celsius','Fahrenheit','Kelvin'],
-        base: null // handled specially
-    },
-    area: {
-        units: ['Square Meter','Square Kilometer','Square Mile','Acre','Hectare','Square Foot','Square Inch'],
-        base: { 'Square Meter':1, 'Square Kilometer':1e-6, 'Square Mile':3.861e-7, Acre:0.000247105, Hectare:0.0001, 'Square Foot':10.7639, 'Square Inch':1550.0031 }
-    },
-    speed: {
-        units: ['m/s','km/h','mph','Knot','ft/s'],
-        base: { 'm/s':1, 'km/h':3.6, 'mph':2.23694, 'Knot':1.94384, 'ft/s':3.28084 }
-    },
-    data: {
-        units: ['Byte','Kilobyte','Megabyte','Gigabyte','Terabyte','Bit'],
-        base: { Byte:1, Kilobyte:1/1024, Megabyte:1/1048576, Gigabyte:1/1073741824, Terabyte:1/1099511627776, Bit:8 }
-    }
-};
-
-function setConverter(type, btn) {
-    S.converterType = type;
-    document.querySelectorAll('.converter-tab').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    populateConverterSelects();
-    doConvert();
-}
-
-function populateConverterSelects() {
-    const conv = CONVERTERS[S.converterType];
-    const from = document.getElementById('convFrom');
-    const to = document.getElementById('convTo');
-    const opts = conv.units.map(u => `<option value="${u}">${u}</option>`).join('');
-    from.innerHTML = opts;
-    to.innerHTML = opts;
-    if (conv.units.length > 1) to.selectedIndex = 1;
-}
-
-function doConvert() {
-    const val = parseFloat(document.getElementById('convInput').value);
-    const from = document.getElementById('convFrom').value;
-    const to = document.getElementById('convTo').value;
-    if (isNaN(val)) { document.getElementById('convResult').textContent = '—'; return; }
-
-    let result;
-    if (S.converterType === 'temp') {
-        result = convertTemp(val, from, to);
-    } else {
-        const base = CONVERTERS[S.converterType].base;
-        const inBase = val / base[from];
-        result = inBase * base[to];
-    }
-
-    const fmt = Math.abs(result) < 0.001 || Math.abs(result) > 1e9
-        ? result.toExponential(4)
-        : parseFloat(result.toPrecision(8)).toString();
-
-    document.getElementById('convResult').textContent = fmt;
-    document.getElementById('convExpr').textContent = `${val} ${from} =`;
-}
-
-function convertTemp(val, from, to) {
-    let celsius;
-    if (from === 'Celsius') celsius = val;
-    else if (from === 'Fahrenheit') celsius = (val-32)*5/9;
-    else celsius = val - 273.15;
-
-    if (to === 'Celsius') return celsius;
-    if (to === 'Fahrenheit') return celsius*9/5+32;
-    return celsius + 273.15;
-}
-
-function copyConvResult() {
-    const v = document.getElementById('convResult').textContent;
-    navigator.clipboard.writeText(v).then(() => showNotif('Copied: ' + v));
-}
-
-// ================================================================
-// THEMES
-// ================================================================
-function applyTheme(theme) {
-    S.theme = theme;
-    document.body.setAttribute('data-theme', theme);
-    localStorage.setItem('calcTheme', theme);
-
-    document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
-    const card = document.getElementById(`theme-${theme}`);
-    if (card) card.classList.add('active');
-
-    showNotif(`Theme: ${theme.charAt(0).toUpperCase()+theme.slice(1)}`);
-}
-
-// ================================================================
-// STATS
-// ================================================================
-let sessionTimer;
-function updateStats() {
-    document.getElementById('statCalcs').textContent = S.calcCount;
-    document.getElementById('statGraphs').textContent = S.graphCount;
-    const elapsed = Math.floor((Date.now() - S.sessionStart) / 1000);
-    const m = Math.floor(elapsed/60).toString().padStart(2,'0');
-    const s = (elapsed%60).toString().padStart(2,'0');
-    document.getElementById('statSession').textContent = `${m}:${s}`;
-}
-
-// ================================================================
-// PWA / INSTALL
-// ================================================================
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    S.deferredPrompt = e;
-    document.getElementById('installBtn').style.display = 'flex';
-    setTimeout(() => {
-        document.getElementById('installPrompt').classList.add('visible');
-    }, 5000);
-});
-
-function installApp() {
-    if (S.deferredPrompt) {
-        S.deferredPrompt.prompt();
-        S.deferredPrompt.userChoice.then(r => {
-            if (r.outcome === 'accepted') showNotif('ProCalc installed successfully! 🎉');
-            S.deferredPrompt = null;
+    
+    // safe evaluate using Function constructor (only basic + scientific functions)
+    // we will build a sanitized evaluator that supports: + - * / % **, sin, cos, tan, asin, acos, atan, sqrt, log, ln, exp, pi, e, rad/deg? For simplicity we treat trig in radians (standard)
+    // also support powers ^ (converted to **)
+    // Also factorial, power10, etc. We'll implement via pre-processing + native Math.
+    
+    function evaluateExpression(expr) {
+        // Replace ^ with ** for exponentiation
+        let processed = expr.replace(/\^/g, '**');
+        // Replace scientific constants: pi, e
+        processed = processed.replace(/π/g, 'PI');
+        processed = processed.replace(/e\b/g, 'E');
+        // handle factorial: n! (only integer factorial for n>=0)
+        // factorial replacement: we will parse ! after numbers or parentheses
+        // For simplicity: replace x! with factorial(x) using custom function
+        processed = processed.replace(/(\d+(?:\.\d+)?|\)|π|E|PI)!/g, (match, numOrGroup) => {
+            let number = numOrGroup;
+            // handle parentheses groups: e.g., (2+3)! -> need to evaluate subexpr? but factorial is postfix.
+            // For scientific calc robustness: we restrict factorial to numbers or simple values. We'll evaluate on the fly.
+            if (number === ')') return match; // skip complex, but better evaluate inside later? safer to use custom parse.
+            // we'll create a safer approach: replace N! with fact(N) where fact is defined.
+            return `fact(${number})`;
         });
-    } else {
-        showNotif('To install: tap Share → Add to Home Screen (iOS) or use Chrome menu (Android)');
+        
+        // Also support percent? We'll keep classic: 50% -> 0.5? but scientific usually explicit. I'll add simple % as divide by 100 on preceding number.
+        // handle % of number: e.g., 50% => 0.5 , but we can replace /100 pattern.
+        processed = processed.replace(/(\d+(?:\.\d+)?)%/g, '($1/100)');
+        
+        // define helper functions inside evaluation context
+        const fact = (n) => {
+            let num = Number(n);
+            if (isNaN(num) || !Number.isInteger(num) || num < 0) return NaN;
+            if (num === 0 || num === 1) return 1;
+            let res = 1;
+            for (let i = 2; i <= num; i++) res *= i;
+            return res;
+        };
+        
+        // trigonometric helpers (degrees / radians? In scientific we default rad, but can add deg toggle? For simplicity all trig in radians)
+        // add extra functions: log10, ln, sqrt, cbrt, asin, acos, atan, sinh, cosh, tanh, asinh, etc? Provide common ones.
+        // However to keep UI reasonable, we map:
+        // sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, sqrt, cbrt, log (log10), ln (natural log), exp.
+        // And second functions: arcsin, arccos, arctan, x^y (already have ^), 10^x, e^x, x², x³, 1/x, |x|, etc.
+        // We'll build safe evaluator with math context.
+        
+        const safeEval = (expression) => {
+            // define math context
+            const mathContext = {
+                PI: Math.PI,
+                E: Math.E,
+                sin: (x) => Math.sin(x),
+                cos: (x) => Math.cos(x),
+                tan: (x) => Math.tan(x),
+                asin: (x) => Math.asin(x),
+                acos: (x) => Math.acos(x),
+                atan: (x) => Math.atan(x),
+                sinh: (x) => Math.sinh(x),
+                cosh: (x) => Math.cosh(x),
+                tanh: (x) => Math.tanh(x),
+                asinh: (x) => Math.asinh(x),
+                acosh: (x) => Math.acosh(x),
+                atanh: (x) => Math.atanh(x),
+                sqrt: (x) => Math.sqrt(x),
+                cbrt: (x) => Math.cbrt(x),
+                log: (x) => Math.log10(x),      // log10
+                ln: (x) => Math.log(x),         // natural log
+                exp: (x) => Math.exp(x),
+                abs: (x) => Math.abs(x),
+                floor: (x) => Math.floor(x),
+                ceil: (x) => Math.ceil(x),
+                round: (x) => Math.round(x),
+                fact: fact,
+                // helper for power:
+                pow: (a,b) => Math.pow(a,b)
+            };
+            
+            // Use Function with with? not secure, but we can use a new Function and inject variables
+            // Safer: apply js evaluation after variable replacement.
+            // Use proxy or Function: we define all as local variables in scope.
+            const keys = Object.keys(mathContext);
+            const values = keys.map(k => mathContext[k]);
+            try {
+                // Create function that uses those symbols
+                const evaluator = new Function(...keys, `return (${expression});`);
+                const result = evaluator(...values);
+                if (isNaN(result) || !isFinite(result)) throw new Error("Math Error");
+                return result;
+            } catch (err) {
+                console.warn(err);
+                return NaN;
+            }
+        };
+        
+        try {
+            let finalExpr = processed;
+            // additional safety: replace any consecutive operators? not necessary.
+            let computed = safeEval(finalExpr);
+            if (isNaN(computed)) return "Error";
+            // round to avoid floating noise, but keep high precision
+            if (Math.abs(computed) > 1e12) return computed.toExponential(8);
+            return parseFloat(computed.toFixed(10)).toString();
+        } catch (e) {
+            return "Error";
+        }
     }
-    dismissInstall();
-}
-
-function dismissInstall() {
-    document.getElementById('installPrompt').classList.remove('visible');
-}
-
-// PWA Manifest
-function setupPWA() {
-    const manifest = {
-        name: 'ProCalc - Scientific Calculator',
-        short_name: 'ProCalc',
-        description: 'Professional Scientific Calculator with Graphing',
-        start_url: '/',
-        display: 'standalone',
-        background_color: '#0f0c29',
-        theme_color: '#302b63',
-        icons: [
-            { src: 'https://via.placeholder.com/192x192/302b63/ffffff?text=PC', sizes: '192x192', type: 'image/png' },
-            { src: 'https://via.placeholder.com/512x512/302b63/ffffff?text=PC', sizes: '512x512', type: 'image/png' }
-        ]
-    };
-    const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    document.getElementById('manifestLink').setAttribute('href', url);
-
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-        const swCode = `
-            const CACHE = 'procalc-v1';
-            const ASSETS = ['/'];
-            self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))));
-            self.addEventListener('fetch', e => e.respondWith(
-                caches.match(e.request).then(r => r || fetch(e.request)).catch(() => caches.match('/'))
-            ));
-        `;
-        const swBlob = new Blob([swCode], {type:'application/javascript'});
-        const swUrl = URL.createObjectURL(swBlob);
-        navigator.serviceWorker.register(swUrl).catch(() => {});
+    
+    // recompute current expression fully
+    function computeAndUpdate() {
+        if (currentExpression === "" || currentExpression === "Error") {
+            currentResult = "0";
+            updateDisplay();
+            return;
+        }
+        let evalResult = evaluateExpression(currentExpression);
+        if (evalResult === "Error") {
+            currentResult = "Error";
+            resultDiv.innerText = "Error";
+            exprDiv.innerText = currentExpression;
+            waitingForOperand = true;
+        } else {
+            currentResult = evalResult;
+            waitingForOperand = true; // after compute, next digit starts fresh
+            updateDisplay();
+        }
     }
-}
-
-// ================================================================
-// MONETIZATION
-// ================================================================
-function selectPlan(plan) {
-    S.selectedPlan = plan;
-    document.querySelectorAll('.pricing-card').forEach((c,i) => {
-        c.style.borderColor = (i===0&&plan==='monthly')||(i===1&&plan==='yearly')
-            ? 'var(--accent)' : 'var(--border-color)';
-    });
-}
-
-function purchase() {
-    // In production: integrate Stripe, PayPal, or App Store billing
-    showNotif(`Redirecting to payment for ${S.selectedPlan} plan...`);
-    setTimeout(() => {
-        closeModal('proModal');
-        showNotif('Payment system would launch here. Integrate Stripe or PayPal for real payments.');
-    }, 1500);
-}
-
-function shareApp() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'ProCalc - Scientific Calculator',
-            text: 'Check out this amazing scientific calculator!',
-            url: window.location.href
-        }).catch(() => {});
-    } else {
-        navigator.clipboard.writeText(window.location.href)
-            .then(() => showNotif('Link copied to clipboard!'));
+    
+    // append token to expression
+    function appendToExpression(value) {
+        if (waitingForOperand && !isOperator(value) && value !== '=' && value !== ')' && value !== '(' && !isFunctionCommand(value)) {
+            // after result, start fresh expression
+            currentExpression = (value === '.' ? '0.' : value);
+            waitingForOperand = false;
+        } else if (currentExpression === "0" && !isOperator(value) && value !== '.' && !isFunctionCommand(value) && value !== '(') {
+            currentExpression = value;
+        } else if (currentExpression === "Error") {
+            currentExpression = value;
+            waitingForOperand = false;
+        } else {
+            currentExpression += value;
+        }
+        // clean potential duplicates: avoid multiple leading zeros but fine
+        updateDisplay();
+        // compute live? scientific often update on '=', but we can evaluate on equals only, but also nice to show when pressing '='
+        // but we also compute on equals; no need realtime eval.
     }
-}
-
-// ================================================================
-// MODAL
-// ================================================================
-function openModal(id) {
-    document.getElementById(id).classList.add('open');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('open');
-}
-
-// Close modal on overlay click
-document.querySelectorAll('.modal-overlay').forEach(el => {
-    el.addEventListener('click', function(e) {
-        if (e.target === this) this.classList.remove('open');
-    });
-});
-
-// ================================================================
-// NOTIFICATIONS
-// ================================================================
-function showNotif(msg, type) {
-    const notif = document.createElement('div');
-    notif.className = 'notification';
-    notif.textContent = msg;
-    if (type === 'warn') notif.style.borderColor = 'var(--btn-clear-color)';
-    document.body.appendChild(notif);
-    setTimeout(() => {
-        notif.style.animation = 'none';
-        notif.style.opacity = '0';
-        notif.style.transition = 'opacity 0.3s';
-        setTimeout(() => notif.remove(), 300);
-    }, 2500);
-}
-
-// ================================================================
-// RIPPLE
-// ================================================================
-function ripple(e) {
-    if (!e) return;
-    const btn = e.currentTarget || e.target;
-    if (!btn || !btn.getBoundingClientRect) return;
-    const rect = btn.getBoundingClientRect();
-    const r = document.createElement('span');
-    r.className = 'ripple';
-    const size = Math.max(rect.width, rect.height);
-    const x = (e.clientX||rect.left+rect.width/2) - rect.left - size/2;
-    const y = (e.clientY||rect.top+rect.height/2) - rect.top - size/2;
-    r.style.cssText = `width:${size}px;height:${size}px;left:${x}px;top:${y}px`;
-    btn.appendChild(r);
-    setTimeout(() => r.remove(), 600);
-}
-
-// ================================================================
-// KEYBOARD
-// ================================================================
-document.addEventListener('keydown', e => {
-    if (e.ctrlKey || e.metaKey) return;
-    const k = e.key;
-    if (k >= '0' && k <= '9') appendNum(k, {});
-    else if (k === '.') appendDec({});
-    else if (k === '+') appendOp('+', {});
-    else if (k === '-') appendOp('−', {});
-    else if (k === '*') appendOp('×', {});
-    else if (k === '/') { e.preventDefault(); appendOp('÷', {}); }
-    else if (k === 'Enter' || k === '=') calculate({});
-    else if (k === 'Backspace') backspace({});
-    else if (k === 'Escape') clearAll({});
-    else if (k === '%') percentage({});
-    else if (k === 's') sciFn('sin', {});
-    else if (k === 'c') sciFn('cos', {});
-    else if (k === 't') sciFn('tan', {});
-    else if (k === 'l') sciFn('log', {});
-    else if (k === 'n') sciFn('ln', {});
-    else if (k === 'r') sciFn('√', {});
-    else if (k === 'p') sciFn('π', {});
-});
-
-// ================================================================
-// INIT
-// ================================================================
-function init() {
-    // Apply saved theme
-    applyTheme(S.theme);
-
-    // Populate converter
-    populateConverterSelects();
-    doConvert();
-
-    // Render history
-    renderHistory();
-
-    // Update display
-    updateDisplay();
-
-    // Setup PWA
-    setupPWA();
-
-    // Session timer
-    sessionTimer = setInterval(updateStats, 1000);
-
-    // Initial graph
-    setTimeout(() => {
-        quickPlot('sin(x)');
-        quickPlot('cos(x)');
-    }, 500);
-
-    // Update stats
-    document.getElementById('statCalcs').textContent = S.calcCount;
-    document.getElementById('statGraphs').textContent = S.graphCount;
-}
-
-init();
+    
+    function isOperator(val) {
+        return ['+', '-', '*', '/', '%', '^'].includes(val);
+    }
+    
+    function isFunctionCommand(val) {
+        // these are function names ending with '('
+        return /^[a-z]+\($/i.test(val);
+    }
+    
+    // apply unary operation (like sqrt, sin, etc) depending on shift
+    function applyFunction(funcName) {
+        let activeFunc = funcName;
+        if (shiftActive) {
+            // shift mapping: sin->asin, cos->acos, tan->atan, sqrt->cbrt, ln->exp, log->10^, x² -> x³ ? we map systematically
+            const shiftMap = {
+                'sin': 'asin', 'cos': 'acos', 'tan': 'atan',
+                'sin(': 'asin(', 'cos(': 'acos(', 'tan(': 'atan(',
+                'sqrt': 'cbrt', 'sqrt(': 'cbrt(',
+                'ln': 'exp', 'ln(': 'exp(',
+                'log': '10^',    // we treat as 10^( ... )
+                'x²': 'x³',      // custom
+                'xʸ': 'x^y'      // but x^y already, handled via operator
+            };
+            if (shiftMap[funcName]) activeFunc = shiftMap[funcName];
+            else if (funcName === '1/x') activeFunc = 'abs'; // but we handle shift differently for inv.
+            // custom: for 1/x second = |x|? but we will handle in mapping before insertion.
+        }
+        
+        // handle special cases: 10^ for shift of log
+        if (activeFunc === '10^') {
+            appendToExpression('10^(');
+            return;
+        }
+        if (activeFunc === 'x³') {
+            // cube the current operand: we can take the last number or whole expression between parentheses? best: wrap last value? simpler: insert ^3 on current token
+            // We'll insert ^3 at end of expression but smart: insert ( currentExpression )^3? Overkill, just append '^3'
+            appendToExpression('^3');
+            return;
+        }
+        if (activeFunc === 'x²') {
+            appendToExpression('^2');
+            return;
+        }
+        if (activeFunc === '1/x') {
+            appendToExpression('^(-1)');
+            return;
+        }
+        if (activeFunc === '|x|') {
+            appendToExpression('abs(');
+            return;
+        }
+        if (activeFunc === 'floor') {
+            appendToExpression('floor(');
+            return;
+        }
+        if (activeFunc === 'ceil') {
+            appendToExpression('ceil(');
+            return;
+        }
+        if (activeFunc === 'round') {
+            appendToExpression('round(');
+            return;
+        }
+        if (activeFunc === 'fact') {
+            appendToExpression('!');
+            return;
+        }
+        // standard functions with parentheses
+        let finalFunc = activeFunc.endsWith('(') ? activeFunc : activeFunc + '(';
+        appendToExpression(finalFunc);
+    }
+    
+    // clear all
+    function clearAll() {
+        currentExpression = "0";
+        currentResult = "0";
+        waitingForOperand = false;
+        shiftActive = false;
+        updateShiftUI();
+        updateDisplay();
+    }
+    
+    // backspace
+    function backspace() {
+        if (currentExpression === "Error") {
+            clearAll();
+            return;
+        }
+        if (currentExpression.length === 1 || (currentExpression === "0")) {
+            currentExpression = "0";
+        } else {
+            currentExpression = currentExpression.slice(0, -1);
+            if (currentExpression === "") currentExpression = "0";
+        }
+        updateDisplay();
+        waitingForOperand = false;
+    }
+    
+    // equals
+    function evaluateEquals() {
+        if (currentExpression === "" || currentExpression === "Error") return;
+        let evalResult = evaluateExpression(currentExpression);
+        if (evalResult === "Error") {
+            currentResult = "Error";
+            currentExpression = "Error";
+        } else {
+            currentResult = evalResult;
+            currentExpression = evalResult;   // after equals, new expr = result
+            waitingForOperand = true;
+        }
+        shiftActive = false;
+        updateShiftUI();
+        updateDisplay();
+    }
+    
+    // Toggle shift mode
+    function toggleShift() {
+        shiftActive = !shiftActive;
+        updateShiftUI();
+    }
+    
+    function updateShiftUI() {
+        if (shiftActive) {
+            shiftIndicatorSpan.style.display = "inline-flex";
+        } else {
+            shiftIndicatorSpan.style.display = "none";
+        }
+        // also update buttons visual? change class on button containers dynamically? We'll just reapply style on active buttons
+        // additional visual on '2nd' button itself
+        const invBtn = document.getElementById('invButton');
+        if (invBtn) {
+            if (shiftActive) invBtn.classList.add('second-mode');
+            else invBtn.classList.remove('second-mode');
+        }
+    }
+    
+    // handle parentheses
+    function addParenthesis() {
+        appendToExpression('(');
+    }
+    
+    function closeParenthesis() {
+        appendToExpression(')');
+    }
+    
+    // ----- Build dynamic buttons (maintain responsiveness and layout) -----
+    function buildCalculatorUI() {
+        const container = document.getElementById("buttonsContainer");
+        // Define button sets: each object {label, action, type, value?}
+        const buttons = [
+            // row1: 2nd, ( , ), C, ⌫, ÷ (/)
+            { label: "2nd", action: "shift", class: "fn-btn inv-btn", id: "invButton" },
+            { label: "(", action: "parenOpen", class: "fn-btn" },
+            { label: ")", action: "parenClose", class: "fn-btn" },
+            { label: "C", action: "clear", class: "clear-btn" },
+            { label: "⌫", action: "backspace", class: "fn-btn" },
+            { label: "÷", action: "operator", value: "/", class: "op-btn" },
+            // row2: sin, cos, tan, ln, log, ×
+            { label: "sin", action: "func", func: "sin", class: "fn-btn" },
+            { label: "cos", action: "func", func: "cos", class: "fn-btn" },
+            { label: "tan", action: "func", func: "tan", class: "fn-btn" },
+            { label: "ln", action: "func", func: "ln", class: "fn-btn" },
+            { label: "log", action: "func", func: "log", class: "fn-btn" },
+            { label: "×", action: "operator", value: "*", class: "op-btn" },
+            // row3: asin / second layer? but mapped by shift; show x², x³, √, ∛, xʸ, - (minus)
+            { label: "x²", action: "func", func: "x²", class: "fn-btn" },
+            { label: "x³", action: "func", func: "x³", class: "fn-btn" },
+            { label: "√", action: "func", func: "sqrt", class: "fn-btn" },
+            { label: "∛", action: "func", func: "cbrt", class: "fn-btn" },
+            { label: "xʸ", action: "operator", value: "^", class: "fn-btn" },
+            { label: "−", action: "operator", value: "-", class: "op-btn" },
+            // row4: 1/x, |x|, π, e, n!, + (plus)
+            { label: "1/x", action: "func", func: "1/x", class: "fn-btn" },
+            { label: "|x|", action: "func", func: "|x|", class: "fn-btn" },
+            { label: "π", action: "constant", value: "π", class: "fn-btn" },
+            { label: "e", action: "constant", value: "e", class: "fn-btn" },
+            { label: "n!", action: "func", func: "fact", class: "fn-btn" },
+            { label: "+", action: "operator", value: "+", class: "op-btn" },
+            // row5: 7,8,9, (, ), % ,
+            { label: "7", action: "digit", value: "7", class: "" },
+            { label: "8", action: "digit", value: "8", class: "" },
+            { label: "9", action: "digit", value: "9", class: "" },
+            { label: "(", action: "parenOpen", class: "fn-btn" },
+            { label: ")", action: "parenClose", class: "fn-btn" },
+            { label: "%", action: "operator", value: "%", class: "fn-btn" },
+            // row6: 4,5,6, floor, ceil, round (extra scientific)
+            { label: "4", action: "digit", value: "4", class: "" },
+            { label: "5", action: "digit", value: "5", class: "" },
+            { label: "6", action: "digit", value: "6", class: "" },
+            { label: "floor", action: "func", func: "floor", class: "fn-btn" },
+            { label: "ceil", action: "func", func: "ceil", class: "fn-btn" },
+            { label: "round", action: "func", func: "round", class: "fn-btn" },
+            // row7: 1,2,3, asin, acos, atan (on shift these show arc versions, but same button label)
+            { label: "1", action: "digit", value: "1", class: "" },
+            { label: "2", action: "digit", value: "2", class: "" },
+            { label: "3", action: "digit", value: "3", class: "" },
+            { label: "asin", action: "func", func: "asin", class: "fn-btn" },
+            { label: "acos", action: "func", func: "acos", class: "fn-btn" },
+            { label: "atan", action: "func", func: "atan", class: "fn-btn" },
+            // row8: 0, ., (-) , exp, sinh, = (equal)
+            { label: "0", action: "digit", value: "0", class: "" },
+            { label: ".", action: "digit", value: ".", class: "" },
+            { label: "(-)", action: "negate", class: "fn-btn" },
+            { label: "exp", action: "func", func: "exp", class: "fn-btn" },
+            { label: "sinh", action: "func", func: "sinh", class: "fn-btn" },
+            { label: "=", action: "equal", class: "eq-btn" }
+        ];
+        
+        container.innerHTML = "";
+        buttons.forEach(btn => {
+            const buttonEl = document.createElement("button");
+            buttonEl.innerText = btn.label;
+            if (btn.class) buttonEl.className = btn.class;
+            else buttonEl.className = "";
+            if (btn.id) buttonEl.id = btn.id;
+            
+            buttonEl.addEventListener("click", (e) => {
+                e.preventDefault();
+                switch (btn.action) {
+                    case "digit": appendToExpression(btn.value); break;
+                    case "operator": appendToExpression(btn.value); break;
+                    case "constant": appendToExpression(btn.value); break;
+                    case "func": applyFunction(btn.func); break;
+                    case "shift": toggleShift(); break;
+                    case "clear": clearAll(); break;
+                    case "backspace": backspace(); break;
+                    case "parenOpen": addParenthesis(); break;
+                    case "parenClose": closeParenthesis(); break;
+                    case "equal": evaluateEquals(); break;
+                    case "negate": 
+                        if (currentExpression !== "Error") {
+                            if (/^[0-9].*/.test(currentExpression) || currentExpression === "0") {
+                                if (currentExpression.startsWith('-')) currentExpression = currentExpression.slice(1);
+                                else currentExpression = '-' + currentExpression;
+                                updateDisplay();
+                            } else {
+                                appendToExpression('(-');
+                            }
+                        }
+                        break;
+                    default: break;
+                }
+                // after any action, if shift is not persistent for long, but we keep shift until manually toggled off.
+            });
+            container.appendChild(buttonEl);
+        });
+    }
+    
+    // initial reset and UI building
+    function init() {
+        buildCalculatorUI();
+        clearAll();
+        updateShiftUI();
+    }
+    
+    init();
 </script>
 </body>
 </html>
